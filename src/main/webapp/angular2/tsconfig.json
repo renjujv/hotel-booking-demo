@@ -16,5 +16,10 @@
     {
       "path": "./e2e/tsconfig.json"
     }
-]
+],
+  "compilerOptions": {
+    //...
+    "types": [ "node" ],
+    "typeRoots": ["node_modules/@types"]
+  }
 }

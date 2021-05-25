@@ -15,18 +15,19 @@ public class RoomEntity {
     @Id @Getter @Setter @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @NonNull @Getter @Setter
-    private Integer RoomNumber;
+    @NotNull @Getter @Setter
+    private Integer roomNumber;
 
-    @NonNull @Getter @Setter
-    private String Price;
+    @NotNull @Getter @Setter
+    private String price;
 
-    @Getter @Setter @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.PERSIST)
+    @Getter @Setter
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     private List<ReservationEntity> reservationEntityList;
 
-    public RoomEntity(@NonNull Integer roomNumber, @NonNull String price) {
-        this.RoomNumber = roomNumber;
-        this.Price = price;
+    public RoomEntity(@NotNull Integer roomNumber, @NotNull String price) {
+        this.roomNumber = roomNumber;
+        this.price = price;
     }
 
     public void addReservationEntity(ReservationEntity reservationEntity){

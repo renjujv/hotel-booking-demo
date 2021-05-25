@@ -15,7 +15,7 @@ import java.time.LocalDate;
 public class ReservationEntity {
 
     @Id @Getter @Setter @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long Id;
+    private Long id;
 
     @NotNull @Getter @Setter
     private LocalDate checkin;
@@ -23,7 +23,7 @@ public class ReservationEntity {
     @NotNull @Getter @Setter
     private LocalDate checkout;
 
-    @ManyToOne @Getter @Setter
+    @ManyToOne(targetEntity = RoomEntity.class) @Getter @Setter
     private RoomEntity roomEntity;
 
     public ReservationEntity(@NotNull LocalDate checkin, @NotNull LocalDate checkout) {

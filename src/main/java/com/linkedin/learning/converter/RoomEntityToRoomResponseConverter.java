@@ -7,29 +7,13 @@ import com.linkedin.learning.model.response.ReservableRoomResponse;
 import com.linkedin.learning.rest.ResourceConstants;
 import org.springframework.core.convert.converter.Converter;
 
-public class RoomEntityToReservableRoomResponseConverter implements Converter<RoomEntity, ReservableRoomResponse> {
+public class RoomEntityToRoomResponseConverter implements Converter<RoomEntity, ReservableRoomResponse> {
 
-    public static ReservableRoomResponse converter(RoomEntity roomEntity) {
-        ReservableRoomResponse reservableRoomResponse = new ReservableRoomResponse();
-        reservableRoomResponse.setRoomNumber(roomEntity.getRoomNumber());
-        reservableRoomResponse.setPrice(Integer.valueOf(roomEntity.getPrice()));
-        reservableRoomResponse.setId(roomEntity.getId());
-
-        Links links = new Links();
-        Self self = new Self();
-        self.setRef(ResourceConstants.ROOM_RESERVATION_V1 + "/" + roomEntity.getId());
-        links.setSelf(self);
-        reservableRoomResponse.setLinks(links);
-        return reservableRoomResponse;
-    }
-
-    @Override
     public ReservableRoomResponse convert(RoomEntity roomEntity) {
         ReservableRoomResponse reservableRoomResponse = new ReservableRoomResponse();
         reservableRoomResponse.setRoomNumber(roomEntity.getRoomNumber());
         reservableRoomResponse.setPrice(Integer.valueOf(roomEntity.getPrice()));
         reservableRoomResponse.setId(roomEntity.getId());
-
         Links links = new Links();
         Self self = new Self();
         self.setRef(ResourceConstants.ROOM_RESERVATION_V1 + "/" + roomEntity.getId());

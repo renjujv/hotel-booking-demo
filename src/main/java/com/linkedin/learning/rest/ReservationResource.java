@@ -19,14 +19,16 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Date;
 import java.time.LocalDate;
-import java.util.Optional;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.List;
 
 @RestController
 @RequestMapping(ResourceConstants.ROOM_RESERVATION_V1)
 @CrossOrigin
 public class ReservationResource {
-
     @Autowired
     PageableRoomRepository pageableRoomRepository;
     @Autowired
@@ -36,14 +38,28 @@ public class ReservationResource {
     @Autowired
     ConversionService conversionService;
 
+    //@DateTimeFormat(iso = DateTimeFormat.ISO.DATE,pattern = "dd-MM-yyyy") LocalDate checkin
     @RequestMapping(path = "",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<ReservableRoomResponse> getAvailableRooms(
-            @RequestParam(value = "checkin") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkin,
-            @RequestParam(value = "checkout") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkout,
+            @RequestParam(value = "checkin") String checkin,
+            @RequestParam(value = "checkout") String checkout,
             Pageable pageable){
-
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        LocalDate localCheckinDate = LocalDate.parse(checkin, formatter);
+        LocalDate localCheckoutDate = LocalDate.parse(checkout, formatter);
         Page<RoomEntity> roomEntityList = pageableRoomRepository.findAll(pageable);
-        return roomEntityList.map(RoomEntityToReservableRoomResponseConverter::convertF);
+        Page<ReservableRoomResponse> reservableRoomResponses = roomEntityList
+                .map(RoomEntityToReservableRoomResponseConverter::converter);
+        reservableRoomResponses.stream()
+
+                .forEach(reservableRoomResponse -> System.out.println("["+reservableRoomResponse.getId()+","+reservableRoomResponse.getRoomNumber()+","+reservableRoomResponse.getPrice()+","+reservableRoomResponse.getLinks()+"]"));
+        return reservableRoomResponses;
+    }
+
+    @RequestMapping(path = "/all",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<RoomEntity> getAllAvailableRooms(){
+        List<RoomEntity> roomEntity = roomRepository.findAll();
+        return new ResponseEntity(roomEntity,HttpStatus.OK);
     }
 
     @RequestMapping(path = "/{roomId}",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
