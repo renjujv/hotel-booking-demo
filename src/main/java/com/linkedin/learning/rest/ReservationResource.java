@@ -9,24 +9,22 @@ import com.linkedin.learning.model.response.ReservationResponse;
 import com.linkedin.learning.repository.PageableRoomRepository;
 import com.linkedin.learning.repository.ReservationRepository;
 import com.linkedin.learning.repository.RoomRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Date;
-import java.sql.SQLOutput;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Calendar;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping(ResourceConstants.ROOM_RESERVATION_V1)
 @CrossOrigin
@@ -41,12 +39,14 @@ public class ReservationResource {
     ConversionService conversionService;
 
     //@DateTimeFormat(iso = DateTimeFormat.ISO.DATE,pattern = "dd-MM-yyyy") LocalDate checkin
-    @RequestMapping(path = "",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<ReservableRoomResponse> getAvailableRooms(
             @RequestParam(value = "checkin") String checkin,
             @RequestParam(value = "checkout") String checkout,
             Pageable pageable){
+
         String expectedDateFormat = "dd-MM-yyyy";
+        log.info("returns pageable data with argument date format {}",expectedDateFormat);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(expectedDateFormat);
         try{
             LocalDate localCheckinDate = LocalDate.parse(checkin, formatter);

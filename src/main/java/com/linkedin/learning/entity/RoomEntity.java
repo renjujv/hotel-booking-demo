@@ -9,10 +9,10 @@ import java.util.List;
 
 @Entity
 @Table(name = "Room")
-@NoArgsConstructor
+@NoArgsConstructor @ToString
 public class RoomEntity {
 
-    @Id @Getter @Setter @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id @Getter @Setter @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull @Getter @Setter
@@ -21,8 +21,7 @@ public class RoomEntity {
     @NotNull @Getter @Setter
     private String price;
 
-    @Getter @Setter
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @Getter @Setter @OneToMany(mappedBy = "roomEntity",fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     private List<ReservationEntity> reservationEntityList;
 
     public RoomEntity(@NotNull Integer roomNumber, @NotNull String price) {

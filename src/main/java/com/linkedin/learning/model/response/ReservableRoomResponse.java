@@ -3,8 +3,7 @@ package com.linkedin.learning.model.response;
 import com.linkedin.learning.model.Links;
 import lombok.*;
 
-@AllArgsConstructor
-@NoArgsConstructor
+@AllArgsConstructor @NoArgsConstructor @ToString
 public class ReservableRoomResponse {
     @Getter @Setter @NonNull
     private Long id;

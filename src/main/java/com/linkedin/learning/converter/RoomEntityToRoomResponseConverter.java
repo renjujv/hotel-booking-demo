@@ -5,8 +5,10 @@ import com.linkedin.learning.model.Links;
 import com.linkedin.learning.model.Self;
 import com.linkedin.learning.model.response.ReservableRoomResponse;
 import com.linkedin.learning.rest.ResourceConstants;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.converter.Converter;
 
+@Slf4j
 public class RoomEntityToRoomResponseConverter implements Converter<RoomEntity, ReservableRoomResponse> {
 
     public ReservableRoomResponse convert(RoomEntity roomEntity) {
@@ -19,6 +21,7 @@ public class RoomEntityToRoomResponseConverter implements Converter<RoomEntity, 
         self.setRef(ResourceConstants.ROOM_RESERVATION_V1 + "/" + roomEntity.getId());
         links.setSelf(self);
         reservableRoomResponse.setLinks(links);
+        log.info("converting room entity to reservable room response {}",reservableRoomResponse);
         return reservableRoomResponse;
     }
 }

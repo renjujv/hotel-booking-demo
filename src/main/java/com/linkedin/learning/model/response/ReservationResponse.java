@@ -5,8 +5,7 @@ import lombok.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
-@AllArgsConstructor
-@NoArgsConstructor
+@AllArgsConstructor @NoArgsConstructor @ToString
 public class ReservationResponse {
     @Getter @Setter
     private Long id;
