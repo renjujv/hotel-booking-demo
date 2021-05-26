@@ -8,7 +8,7 @@ import java.time.LocalDate;
 @AllArgsConstructor @NoArgsConstructor @ToString
 public class ReservationResponse {
     @Getter @Setter
-    private Long id;
+    private Integer id;
     @Getter @Setter
     private LocalDate checkin;
     @Getter @Setter

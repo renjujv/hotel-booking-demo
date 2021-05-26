@@ -1,9 +1,6 @@
 package com.linkedin.learning.entity;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -14,8 +11,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class ReservationEntity {
 
-    @Id @Getter @Setter @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @Id @Getter @Setter @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     @NotNull @Getter @Setter
     private LocalDate checkin;
@@ -23,11 +20,27 @@ public class ReservationEntity {
     @NotNull @Getter @Setter
     private LocalDate checkout;
 
-    @ManyToOne(targetEntity = RoomEntity.class) @Getter @Setter
+    @ManyToOne(targetEntity = RoomEntity.class) @Getter @Setter @JoinColumn(name = "room_Id")
     private RoomEntity roomEntity;
 
     public ReservationEntity(@NotNull LocalDate checkin, @NotNull LocalDate checkout) {
         this.checkin = checkin;
         this.checkout = checkout;
+    }
+
+    public ReservationEntity(@NotNull LocalDate checkin, @NotNull LocalDate checkout,RoomEntity room) {
+        this.checkin = checkin;
+        this.checkout = checkout;
+        this.roomEntity = room;
+    }
+
+    @Override
+    public String toString() {
+        return "ReservationEntity{" +
+                "id=" + id +
+                ", checkin=" + checkin +
+                ", checkout=" + checkout +
+                ", roomId=" + roomEntity.getId() +
+                '}';
     }
 }

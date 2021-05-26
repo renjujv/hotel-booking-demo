@@ -11,10 +11,10 @@ import java.time.LocalDate;
 @AllArgsConstructor @NoArgsConstructor @ToString
 public class ReservationRequest {
     @Getter @Setter
-    private Long id;
+    private Integer id;
 
     @Getter @Setter
-    private Long roomId;
+    private Integer roomId;
 
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
@@ -28,7 +28,7 @@ public class ReservationRequest {
     @Getter @Setter
     private LocalDate checkout;
 
-    public ReservationRequest(Long roomId, LocalDate checkin, LocalDate checkout) {
+    public ReservationRequest(Integer roomId, LocalDate checkin, LocalDate checkout) {
         this.roomId = roomId;
         this.checkin = checkin;
         this.checkout = checkout;

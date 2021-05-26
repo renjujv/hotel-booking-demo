@@ -6,7 +6,7 @@ import lombok.*;
 @AllArgsConstructor @NoArgsConstructor @ToString
 public class ReservableRoomResponse {
     @Getter @Setter @NonNull
-    private Long id;
+    private Integer id;
     @Getter @Setter @NonNull
     private Integer roomNumber;
     @Getter @Setter @NonNull

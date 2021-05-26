@@ -61,20 +61,20 @@ public class ReservationResource {
         return reservableRoomResponses;
     }
 
-    @RequestMapping(path = "/all",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<RoomEntity>> getAllAvailableRooms(){
         List<RoomEntity> roomEntity = roomRepository.findAll();
         return new ResponseEntity<List<RoomEntity>>(roomEntity,HttpStatus.OK);
     }
 
-    @RequestMapping(path = "/{roomId}",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/{roomId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RoomEntity> getRoomById(
-            @PathVariable Long roomId) {
+            @PathVariable Integer roomId) {
         RoomEntity roomEntity = roomRepository.findById(roomId).get();
         return new ResponseEntity<RoomEntity>(roomEntity,HttpStatus.OK);
     }
 
-    @RequestMapping(path = "",method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE,
+    @PostMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ReservationResponse> createReservation(
             @RequestBody ReservationRequest reservationRequest) {
@@ -90,14 +90,14 @@ public class ReservationResource {
         return new ResponseEntity<>(reservationResponse,HttpStatus.CREATED);
     }
 
-    @RequestMapping(path = "",method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE,
+    @PutMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ReservableRoomResponse> updateReservation(
             @RequestBody ReservationRequest reservationRequest) {
         return new ResponseEntity<ReservableRoomResponse>(new ReservableRoomResponse(),HttpStatus.ACCEPTED);
     }
 
-    @RequestMapping(path = "/{reservationId}",method = RequestMethod.DELETE)
+    @DeleteMapping(path = "/{reservationId}")
     public ResponseEntity<ReservableRoomResponse> deleteReservation(
             @PathVariable Long reservationId) {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
