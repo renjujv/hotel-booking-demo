@@ -20,8 +20,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
+import java.sql.SQLOutput;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Calendar;
 import java.util.List;
 
@@ -44,29 +46,32 @@ public class ReservationResource {
             @RequestParam(value = "checkin") String checkin,
             @RequestParam(value = "checkout") String checkout,
             Pageable pageable){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        LocalDate localCheckinDate = LocalDate.parse(checkin, formatter);
-        LocalDate localCheckoutDate = LocalDate.parse(checkout, formatter);
+        String expectedDateFormat = "dd-MM-yyyy";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(expectedDateFormat);
+        try{
+            LocalDate localCheckinDate = LocalDate.parse(checkin, formatter);
+            LocalDate localCheckoutDate = LocalDate.parse(checkout, formatter);
+        } catch(DateTimeParseException dateTimeParseException){
+            throw new RuntimeException("Please check the given date format is same as "+expectedDateFormat,dateTimeParseException);
+        }
         Page<RoomEntity> roomEntityList = pageableRoomRepository.findAll(pageable);
         Page<ReservableRoomResponse> reservableRoomResponses = roomEntityList
                 .map(RoomEntityToReservableRoomResponseConverter::converter);
-        reservableRoomResponses.stream()
-
-                .forEach(reservableRoomResponse -> System.out.println("["+reservableRoomResponse.getId()+","+reservableRoomResponse.getRoomNumber()+","+reservableRoomResponse.getPrice()+","+reservableRoomResponse.getLinks()+"]"));
+//        reservableRoomResponses.stream().forEach(reservableRoomResponse -> System.out.println("["+reservableRoomResponse.getId()+","+reservableRoomResponse.getRoomNumber()+","+reservableRoomResponse.getPrice()+","+reservableRoomResponse.getLinks()+"]"));
         return reservableRoomResponses;
     }
 
     @RequestMapping(path = "/all",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<RoomEntity> getAllAvailableRooms(){
+    public ResponseEntity<List<RoomEntity>> getAllAvailableRooms(){
         List<RoomEntity> roomEntity = roomRepository.findAll();
-        return new ResponseEntity(roomEntity,HttpStatus.OK);
+        return new ResponseEntity<List<RoomEntity>>(roomEntity,HttpStatus.OK);
     }
 
     @RequestMapping(path = "/{roomId}",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RoomEntity> getRoomById(
             @PathVariable Long roomId) {
         RoomEntity roomEntity = roomRepository.findById(roomId).get();
-        return new ResponseEntity(roomEntity,HttpStatus.OK);
+        return new ResponseEntity<RoomEntity>(roomEntity,HttpStatus.OK);
     }
 
     @RequestMapping(path = "",method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE,

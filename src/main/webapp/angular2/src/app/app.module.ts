@@ -5,10 +5,12 @@ import {ReactiveFormsModule} from "@angular/forms";
 
 import { AppComponent } from './app.component';
 import {HttpClientModule} from "@angular/common/http";
+import { BookRoomFormComponent } from './book-room-form/book-room-form.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    BookRoomFormComponent
   ],
   imports: [
     BrowserModule,
@@ -17,6 +19,6 @@ import {HttpClientModule} from "@angular/common/http";
     HttpClientModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent,BookRoomFormComponent]
 })
-export class AppModule { }
+export class AppModule {}
