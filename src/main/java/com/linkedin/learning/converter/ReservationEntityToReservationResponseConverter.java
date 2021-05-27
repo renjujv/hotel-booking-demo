@@ -9,13 +9,16 @@ import org.springframework.core.convert.converter.Converter;
 public class ReservationEntityToReservationResponseConverter implements Converter<ReservationEntity, ReservationResponse> {
 
     @Override
-    public ReservationResponse convert(ReservationEntity  reservationEntity) {
+    public ReservationResponse convert(ReservationEntity source) {
         ReservationResponse reservationResponse = new ReservationResponse();
-        reservationResponse.setCheckin(reservationEntity.getCheckin());
-        reservationResponse.setCheckout(reservationEntity.getCheckout());
-
-        log.info("converting reservation entity {} to reservation response.",reservationResponse.toString());
-        if(null != reservationEntity.getId()) reservationResponse.setId(reservationEntity.getId());
+        reservationResponse.setCheckin(source.getCheckin());
+        reservationResponse.setCheckout(source.getCheckout());
+        if(source.getId() != null) {
+            reservationResponse.setId(source.getId());
+            log.info("Fetching and setting id from reservation entity to reservation response.");
+        }
+        log.info("converting reservation entity '{}' to reservation response.",reservationResponse.toString());
+        if(null != source.getId()) reservationResponse.setId(source.getId());
 
         return reservationResponse;
     }

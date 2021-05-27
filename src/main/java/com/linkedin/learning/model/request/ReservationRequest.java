@@ -6,11 +6,15 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.time.LocalDate;
 
 @AllArgsConstructor @NoArgsConstructor @ToString
 public class ReservationRequest {
-    @Getter @Setter
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Getter @Setter
     private Integer id;
 
     @Getter @Setter
@@ -27,10 +31,4 @@ public class ReservationRequest {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @Getter @Setter
     private LocalDate checkout;
-
-    public ReservationRequest(Integer roomId, LocalDate checkin, LocalDate checkout) {
-        this.roomId = roomId;
-        this.checkin = checkin;
-        this.checkout = checkout;
-    }
 }

@@ -1,15 +1,21 @@
 package com.linkedin.learning.model.response;
 
 import com.linkedin.learning.model.Links;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+import javax.validation.constraints.NotNull;
 
 @AllArgsConstructor @NoArgsConstructor @ToString
 public class ReservableRoomResponse {
-    @Getter @Setter @NonNull
+    @Getter @Setter @NotNull
     private Integer id;
-    @Getter @Setter @NonNull
+    @Getter @Setter @NotNull
     private Integer roomNumber;
-    @Getter @Setter @NonNull
+    @Getter @Setter @NotNull
     private Integer price;
     @Getter @Setter
     private Links links;
@@ -18,4 +24,6 @@ public class ReservableRoomResponse {
         this.roomNumber = roomNumber;
         this.price = price;
     }
+
+
 }

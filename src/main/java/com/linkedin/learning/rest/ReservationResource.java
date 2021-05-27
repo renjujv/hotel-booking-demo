@@ -55,9 +55,17 @@ public class ReservationResource {
             throw new RuntimeException("Please check the given date format is same as "+expectedDateFormat,dateTimeParseException);
         }
         Page<RoomEntity> roomEntityList = pageableRoomRepository.findAll(pageable);
+//        Page<ReservableRoomResponse> reservableRoomResponses = roomEntityList
+//                .map(RoomEntityToReservableRoomResponseConverter::converter);
         Page<ReservableRoomResponse> reservableRoomResponses = roomEntityList
                 .map(RoomEntityToReservableRoomResponseConverter::converter);
-//        reservableRoomResponses.stream().forEach(reservableRoomResponse -> System.out.println("["+reservableRoomResponse.getId()+","+reservableRoomResponse.getRoomNumber()+","+reservableRoomResponse.getPrice()+","+reservableRoomResponse.getLinks()+"]"));
+        reservableRoomResponses.stream().forEach(System.out::println);
+//        reservableRoomResponses.stream()
+//                .forEach(reservableRoomResponse -> System.out.println(
+//                        "["+reservableRoomResponse.getId()+"," +
+//                                " "+reservableRoomResponse.getRoomNumber()+"," +
+//                                " "+reservableRoomResponse.getPrice()+"," +
+//                                " "+reservableRoomResponse.getLinks()+"]"));
         return reservableRoomResponses;
     }
 
