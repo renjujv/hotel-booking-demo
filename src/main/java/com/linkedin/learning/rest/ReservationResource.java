@@ -87,12 +87,13 @@ public class ReservationResource {
     public ResponseEntity<ReservationResponse> createReservation(
             @RequestBody ReservationRequest reservationRequest) {
         ReservationEntity reservationEntity = conversionService.convert(reservationRequest,ReservationEntity.class);
-        reservationRepository.save(reservationEntity);
+        reservationRepository.save((reservationEntity!=null)?reservationEntity:new ReservationEntity());
 
         RoomEntity roomEntity = roomRepository.findById(reservationRequest.getRoomId()).get();
         roomEntity.addReservationEntity(reservationEntity);
         roomRepository.save(roomEntity);
-        reservationEntity.setRoomEntity(roomEntity);
+        reservationEntity.setRoomEntity((roomEntity!=null)?roomEntity:new RoomEntity());
+        reservationRepository.save((reservationEntity!=null)?reservationEntity:new ReservationEntity());
 
         ReservationResponse reservationResponse = conversionService.convert(reservationEntity,ReservationResponse.class);
         return new ResponseEntity<>(reservationResponse,HttpStatus.CREATED);
