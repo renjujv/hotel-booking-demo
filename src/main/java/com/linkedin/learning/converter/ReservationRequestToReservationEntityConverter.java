@@ -13,13 +13,11 @@ public class ReservationRequestToReservationEntityConverter implements Converter
         ReservationEntity reservationEntity = new ReservationEntity();
         reservationEntity.setCheckin(source.getCheckin());
         reservationEntity.setCheckout(source.getCheckout());
-        if (source.getId() != null) {
-            reservationEntity.setId(source.getId());
-            log.info("Fetching and setting id for reservation entity from reseervation request");
-        } else{
-            log.info("Source(ReservationRequest) id is null");
-        }
-        if(null != source.getId()) reservationEntity.setId(source.getId());
+        log.info("RoomId obtained in the POST request is {}",source.getRoomId());
+
+        if (source.getId() != null) reservationEntity.setId(source.getId());
+        else log.warn("Source(ReservationRequest) id is null.");
+
         return reservationEntity;
     }
 }

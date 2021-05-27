@@ -15,15 +15,15 @@ public class RoomEntityToReservableRoomResponseConverter implements Converter<Ro
         ReservableRoomResponse reservableRoomResponse = new ReservableRoomResponse();
         reservableRoomResponse.setRoomNumber(source.getRoomNumber());
         reservableRoomResponse.setPrice(Integer.valueOf(source.getPrice()));
-        if(source.getId() != null) {
-            reservableRoomResponse.setId(source.getId());
-            log.info("Fetching and setting id from roomEntity");
-        }
         Links links = new Links();
         Self self = new Self();
         self.setRef(ResourceConstants.ROOM_RESERVATION_V1 + "/" + source.getId());
         links.setSelf(self);
         reservableRoomResponse.setLinks(links);
+
+        if(source.getId() != null) reservableRoomResponse.setId(source.getId());
+        else log.warn("source(RoomEntity) ID is null");
+
         log.info("converting room entity to reservable room response {}",reservableRoomResponse);
         return reservableRoomResponse;
     }
