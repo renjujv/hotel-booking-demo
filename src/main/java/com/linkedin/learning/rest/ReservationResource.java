@@ -19,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -78,10 +79,11 @@ public class ReservationResource {
     @GetMapping(path = "/{roomId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RoomEntity> getRoomById(
             @PathVariable Integer roomId) {
-        RoomEntity roomEntity = roomRepository.findById(roomId).get();
+        RoomEntity roomEntity = roomRepository.findById(roomId).orElse(new RoomEntity(0,"0"));
         return new ResponseEntity<RoomEntity>(roomEntity,HttpStatus.OK);
     }
 
+    //TODO Avoid reservation creation with unavailable room ID by checking roomEntity presence in roomRepository
     @PostMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ReservationResponse> createReservation(
@@ -89,26 +91,53 @@ public class ReservationResource {
         ReservationEntity reservationEntity = conversionService.convert(reservationRequest,ReservationEntity.class);
         reservationRepository.save((reservationEntity!=null)?reservationEntity:new ReservationEntity());
 
-        RoomEntity roomEntity = roomRepository.findById(reservationRequest.getRoomId()).get();
+        RoomEntity roomEntity = roomRepository.findById(reservationRequest.getRoomId()).orElse(new RoomEntity(0,"0"));
         roomEntity.addReservationEntity(reservationEntity);
         roomRepository.save(roomEntity);
-        reservationEntity.setRoomEntity((roomEntity!=null)?roomEntity:new RoomEntity());
-        reservationRepository.save((reservationEntity!=null)?reservationEntity:new ReservationEntity());
+        assert reservationEntity != null;
+        reservationEntity.setRoomEntity(roomEntity);
+        reservationRepository.save(reservationEntity);
 
         ReservationResponse reservationResponse = conversionService.convert(reservationEntity,ReservationResponse.class);
         return new ResponseEntity<>(reservationResponse,HttpStatus.CREATED);
     }
 
-    @PutMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE,
+    @PutMapping(path = "/update/{reservationId}", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ReservableRoomResponse> updateReservation(
+    public ResponseEntity<ReservationResponse> updateReservation(
+            @PathVariable Integer reservationId,
             @RequestBody ReservationRequest reservationRequest) {
-        return new ResponseEntity<ReservableRoomResponse>(new ReservableRoomResponse(),HttpStatus.ACCEPTED);
+        String message = "Need 'room id', 'checkin date', and 'checkout date' to update reservation. Please add the missing values.";
+        ReservationEntity reservationEntity = reservationRepository.findById(reservationId).get();
+        if(reservationRequest.getRoomId()==null
+                || reservationRequest.getCheckout()==null
+                || reservationRequest.getCheckin()==null) {
+            throw new RuntimeException(message);
+        } else {
+            reservationEntity.setCheckin(reservationRequest.getCheckin());
+            reservationEntity.setCheckout(reservationRequest.getCheckout());
+
+            RoomEntity roomEntity = roomRepository.findById(reservationRequest.getRoomId()).orElse(new RoomEntity(0, "0"));
+            roomEntity.addReservationEntity(reservationEntity);
+            roomRepository.save(roomEntity);
+            reservationEntity.setRoomEntity(roomEntity);
+            reservationRepository.save(reservationEntity);
+        }
+            ReservationResponse reservationResponse = conversionService.convert(reservationEntity,ReservationResponse.class);
+        return new ResponseEntity<>(reservationResponse,HttpStatus.ACCEPTED);
     }
 
-    @DeleteMapping(path = "/{reservationId}")
-    public ResponseEntity<ReservableRoomResponse> deleteReservation(
-            @PathVariable Long reservationId) {
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    //TODO Fix delete reservation by deleting dependent entity from other table
+    @DeleteMapping(path = "/delete/{reservationId}")
+    public ResponseEntity<String> deleteReservation(
+            @PathVariable Integer reservationId) {
+        String RESERVATION_DOESNOT_EXIST = String.format("Reservation with id %s does not exist. Please check the reservation Id again.",reservationId);
+        String RESERVATION_DELETED = String.format("Reservation with id %s deleted successfully.",reservationId);
+        if(reservationRepository.existsById(reservationId)){
+            ReservationEntity reservationEntity = reservationRepository.findById(reservationId).orElseThrow(
+                    () -> new EntityNotFoundException(String.format(RESERVATION_DOESNOT_EXIST,reservationId)));
+            reservationRepository.delete(reservationEntity);
+            return new ResponseEntity<>(RESERVATION_DELETED,HttpStatus.ACCEPTED);
+        } else return new ResponseEntity<>(RESERVATION_DOESNOT_EXIST,HttpStatus.NOT_FOUND);
     }
 }
