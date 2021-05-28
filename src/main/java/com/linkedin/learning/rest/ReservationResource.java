@@ -45,7 +45,8 @@ public class ReservationResource {
             @RequestParam(value = "checkout") String checkout,
             Pageable pageable){
 
-        String expectedDateFormat = "dd-MM-yyyy";
+//        String expectedDateFormat = "dd-MM-yyyy";
+        String expectedDateFormat = "yyyy-MM-dd";
         log.info("returns pageable data with argument date format {}",expectedDateFormat);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(expectedDateFormat);
         try{
