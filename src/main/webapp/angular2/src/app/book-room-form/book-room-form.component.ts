@@ -25,19 +25,12 @@ export class BookRoomFormComponent implements OnInit {
       checkin: new FormControl(''),
       checkout: new FormControl(''),
     });
-    // this.rooms= ROOMS;
-    // this.roomSearch = this.formBuilder.group({
-    //     checkin: ['',Validators.required],
-    //     checkout: ['',Validators.required]
-    //   });
-    // this.getState();
   }
 
   onSubmit({value,valid}:{value:RoomSearch,valid:boolean}) {
-    // this.submitted=true;
     console.log("clicked on submit. Updating rooms...");
     this.getAll().subscribe(
-      rooms => this.rooms = rooms.content,
+      rooms => this.rooms = rooms,
       error => console.error(error));
   }
 
@@ -46,12 +39,12 @@ export class BookRoomFormComponent implements OnInit {
   }
 
   getAll():Observable<any>{
-    // getAll(){
-    return this.http.get<any>(this.baseUrl+'/room/reservation/v1?checkin=02-01-2021&checkout=10-02-2021');
+    return this.http.get<any>(this.baseUrl+'/room/reservation/v1?checkin=02-01-2021&checkout=10-02-2021')
+      .pipe(map(this.mapRoom));
   }
 
-  mapRoom(response:HttpResponse<any>):Room[]{
-    return response.body;
+  mapRoom(response:any):Room[]{
+    return response.content;
   }
 
   resetForm() {
