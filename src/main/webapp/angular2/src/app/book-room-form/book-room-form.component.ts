@@ -25,12 +25,12 @@ export class BookRoomFormComponent implements OnInit {
     this.roomSearch = new FormGroup({
       //Validation for dd/mm/yyyy format using regex
       checkin: new FormControl('',
-        [Validators.required]),
+        [Validators.required,Validators.pattern("^(19|20)\\d\\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$")]),
       checkout: new FormControl('',
-        [Validators.required]),
+        [Validators.required,Validators.pattern("^(19|20)\\d\\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$")]),
     });
 
-    //Validators.pattern("^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$")
+    //
 
     const roomSearchValueChanges$ = this.roomSearch.valueChanges;
     roomSearchValueChanges$.subscribe( valueChange => {
@@ -47,7 +47,7 @@ export class BookRoomFormComponent implements OnInit {
       error => console.error(error));
   }
 
-  //TODO Need to reimplement taking the checkin and checkout from form itself and not subscribed values
+  //TODO Need to reimplement taking the checkin and checkout from form itself and not subscribed values in ngOnInit
   reserveRoom(value:string){
     this.request = new ReservationRoomRequest(value, this.currentCheckinValue,this.currentCheckoutValue);
     this.createReservation(this.request);

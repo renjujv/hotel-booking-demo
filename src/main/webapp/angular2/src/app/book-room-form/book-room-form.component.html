@@ -1,27 +1,34 @@
 <div class="row">
   <div class="col-12">
     <br>
-    <h1>Book a Room</h1>
-    <form class="form-horizontal" [formGroup]="roomSearch" (submit)="onSubmit(roomSearch)" (reset)="resetForm()">
+    <h1 class="section-heading">Book a Room</h1>
+    <button class="btn btn-primary btn-sm" type="button" (click)="updateSampleInput()">Add Values</button>
+    <form class="form-horizontal" [formGroup]="roomSearch" (ngSubmit)="onSubmit(roomSearch)" (reset)="resetForm()">
       <div class="form-group form-row">
-          <label for="checkin" class="col-4 font-weight-bold">Check-in:</label>
-          <input id="checkin" class="col-8 form-control" type="date" formControlName="checkin" required>
+        <label for="checkin" class="col-4 font-weight-bold">Check-in:</label>
+        <input id="checkin" class="col-8 form-control" type="date" formControlName="checkin" required
+               [ngClass]="{'pattern-invalid':myform.checkin.errors?.pattern && (myform.checkin.dirty || myform.checkin.touched),
+               'required':myform.checkin.errors?.required && (myform.checkin.dirty || myform.checkin.touched) }">
       </div>
       <div class="form-group form-row">
         <label for="checkout" class="col-4 font-weight-bold">Check-out:</label>
-        <input id="checkout" class="col-8 form-control" type="date" formControlName="checkout" required>
+        <input id="checkout" class="col-8 form-control valid" type="date" formControlName="checkout" required
+               [ngClass]="{'pattern-invalid':myform.checkout.errors?.pattern && (myform.checkout.dirty || myform.checkout.touched),
+               'required':myform.checkout.errors?.required && (myform.checkout.dirty || myform.checkout.touched) }">
       </div>
       <div class="form-group">
         <div class="col-12">
-          <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+<!--          <p>Form Status: {{ this.roomSearch.status }}</p>-->
+          <button type="submit" class="btn btn-primary btn-lg" [disabled]="!this.roomSearch.valid">Submit</button>
+<!--          <button type="submit" class="btn btn-primary btn-lg">Submit</button>-->
           <button type="reset" class="btn btn-warning btn-lg">Clear</button>
         </div>
       </div>
     </form>
   </div>
 </div>
-<div class="row" *ngIf="rooms">
-  <h1 class="col-lg-12">Available Rooms</h1>
+<div class="row rooms-available" *ngIf="rooms" >
+  <h1 *ngIf="this.roomSearch.valid">Available Rooms</h1>
     <div class="table-responsive">
       <table class="col-12 table table-hover">
         <tbody>

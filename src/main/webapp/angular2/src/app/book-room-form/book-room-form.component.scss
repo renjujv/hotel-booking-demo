@@ -1,0 +1,40 @@
+.row{
+  font: 200 1em/1.5em "Exo 2", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.row.rooms-available{
+  justify-content: center;
+}
+
+h1 {
+  color: #ca500f;
+  text-shadow: black;
+  text-align: center;
+}
+
+h2 {
+  color: blueviolet;
+}
+
+#checkin.col-8.form-control.pattern-invalid:after{
+  background-color:coral;
+  content:'Invalid date';
+}
+
+#checkin.col-8.form-control.required:after{
+  background-color:coral;
+  content:'Required';
+}
+
+#checkout.col-8.form-control.pattern-invalid:after{
+  background-color:coral;
+  content:'Invalid date';
+}
+
+#checkout.col-8.form-control.required:after{
+  background-color:coral;
+  content:'Required';
+}
+
+
+
