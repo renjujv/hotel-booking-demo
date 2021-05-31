@@ -24,6 +24,4 @@ public class ReservableRoomResponse {
         this.roomNumber = roomNumber;
         this.price = price;
     }
-
-
 }

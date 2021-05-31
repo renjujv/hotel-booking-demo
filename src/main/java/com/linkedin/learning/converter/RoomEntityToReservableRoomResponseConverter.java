@@ -22,9 +22,9 @@ public class RoomEntityToReservableRoomResponseConverter implements Converter<Ro
         reservableRoomResponse.setLinks(links);
 
         if(source.getId() != null) reservableRoomResponse.setId(source.getId());
-        else log.warn("source(RoomEntity) ID is null");
+        else log.warn("Room Entity ID should be auto-generated. Please check logs.");
 
-        log.info("converting room entity to reservable room response {}",reservableRoomResponse);
+        log.debug("converting room entity to reservable room response {}",reservableRoomResponse);
         return reservableRoomResponse;
     }
 

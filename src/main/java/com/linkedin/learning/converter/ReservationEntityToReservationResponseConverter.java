@@ -15,9 +15,9 @@ public class ReservationEntityToReservationResponseConverter implements Converte
         reservationResponse.setCheckout(source.getCheckout());
 
         if(source.getId() != null) reservationResponse.setId(source.getId());
-        else log.warn("Source(ReservationRequest) id is null");
+        else log.warn("Reservation entity ID should be fetched from reservation request. Please check logs.");
 
-        log.info("converting reservation entity '{}' to reservation response.",reservationResponse.toString());
+        log.debug("converting reservation entity '{}' to reservation response.",reservationResponse.toString());
         return reservationResponse;
     }
 }
