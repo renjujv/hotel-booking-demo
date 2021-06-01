@@ -10,16 +10,16 @@ public class ReservationRequestToReservationEntityConverter implements Converter
 
     @Override
     public ReservationEntity convert(ReservationRequest source) {
+        log.debug("Reservation Request {}",source.toString());
         ReservationEntity reservationEntity = new ReservationEntity();
+        if(source.getId() != null && reservationEntity.getId()==null) reservationEntity.setId(source.getId());
         reservationEntity.setCheckin(source.getCheckin());
         reservationEntity.setCheckout(source.getCheckout());
-        log.info("RoomId obtained in the POST request is {}",source.getRoomId());
 
         // Reservation request ID is obtained from request and is currently supposed to be null.
         // Only RoomID, checkin and checkout dates are provided.
         //TODO Add validation for PUT request and allow updating reservation by ID
-
-//        if (source.getId() != null) reservationEntity.setId(source.getId());
+        log.debug("Reservation Entity {}",reservationEntity.toString());
         return reservationEntity;
     }
 }

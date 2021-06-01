@@ -12,6 +12,7 @@ import org.springframework.core.convert.converter.Converter;
 public class RoomEntityToReservableRoomResponseConverter implements Converter<RoomEntity, ReservableRoomResponse> {
 
     public static ReservableRoomResponse converter(RoomEntity source) {
+        log.debug("Room Entity: {}"+source.toString());
         ReservableRoomResponse reservableRoomResponse = new ReservableRoomResponse();
         reservableRoomResponse.setRoomNumber(source.getRoomNumber());
         reservableRoomResponse.setPrice(Integer.valueOf(source.getPrice()));
@@ -21,10 +22,13 @@ public class RoomEntityToReservableRoomResponseConverter implements Converter<Ro
         links.setSelf(self);
         reservableRoomResponse.setLinks(links);
 
-        if(source.getId() != null) reservableRoomResponse.setId(source.getId());
+        if(source.getId() != null) {
+            log.debug("Setting Reservable Room Response ID from Room Entity ID {}",source.getId());
+            reservableRoomResponse.setId(source.getId());
+        }
         else log.warn("Room Entity ID should be auto-generated. Please check logs.");
 
-        log.debug("converting room entity to reservable room response {}",reservableRoomResponse);
+        log.debug("Reservable room response {}",reservableRoomResponse.toString());
         return reservableRoomResponse;
     }
 

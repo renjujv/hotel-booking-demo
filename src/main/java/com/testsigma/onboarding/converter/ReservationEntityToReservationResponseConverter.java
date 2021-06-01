@@ -10,14 +10,18 @@ public class ReservationEntityToReservationResponseConverter implements Converte
 
     @Override
     public ReservationResponse convert(ReservationEntity source) {
+        log.debug("Reservation Entity: {}"+source.toString());
         ReservationResponse reservationResponse = new ReservationResponse();
         reservationResponse.setCheckin(source.getCheckin());
         reservationResponse.setCheckout(source.getCheckout());
 
-        if(source.getId() != null) reservationResponse.setId(source.getId());
+        if(source.getId() != null) {
+            log.debug("Setting Reservation Response ID from Reservation Entity ID {}",source.getId());
+            reservationResponse.setId(source.getId());
+        }
         else log.warn("Reservation entity ID should be fetched from reservation request. Please check logs.");
 
-        log.debug("converting reservation entity '{}' to reservation response.",reservationResponse.toString());
+        log.debug("Reservation Response {}",reservationResponse.toString());
         return reservationResponse;
     }
 }
