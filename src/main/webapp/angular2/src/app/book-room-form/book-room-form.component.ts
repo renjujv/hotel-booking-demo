@@ -11,7 +11,6 @@ import {Observable} from "rxjs";
 })
 
 export class BookRoomFormComponent implements OnInit {
-  title = 'Hotel Transylvania';
   roomSearch: FormGroup;
   rooms: Room[];
   private baseUrl:string = 'http://localhost:8080';
