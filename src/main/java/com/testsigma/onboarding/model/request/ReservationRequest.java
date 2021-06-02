@@ -14,20 +14,20 @@ import java.time.LocalDate;
 
 @AllArgsConstructor @NoArgsConstructor @ToString
 public class ReservationRequest {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Getter @Setter
+    @Getter @Setter
     private Integer id;
 
     @Getter @Setter
     private Integer roomId;
 
-    @JsonDeserialize(using = LocalDateDeserializer.class)
-    @JsonSerialize(using = LocalDateSerializer.class)
+//    @JsonDeserialize(using = LocalDateDeserializer.class)
+//    @JsonSerialize(using = LocalDateSerializer.class)
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @Getter @Setter
     private LocalDate checkin;
 
-    @JsonDeserialize(using = LocalDateDeserializer.class)
-    @JsonSerialize(using = LocalDateSerializer.class)
+//    @JsonDeserialize(using = LocalDateDeserializer.class)
+//    @JsonSerialize(using = LocalDateSerializer.class)
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @Getter @Setter
     private LocalDate checkout;

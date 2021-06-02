@@ -9,15 +9,15 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ApiConfig {
 
-    @Bean
-    public ObjectMapper objectMapper(){
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        return new ObjectMapper();
-    }
-
-    @Bean
-    public ObjectWriter objectWriter(ObjectMapper objectMapper) {
-        return objectMapper.writerWithDefaultPrettyPrinter();
-    }
+//    @Bean
+//    public ObjectMapper objectMapper(){
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        objectMapper.registerModule(new JavaTimeModule());
+//        return new ObjectMapper();
+//    }
+//
+//    @Bean
+//    public ObjectWriter objectWriter(ObjectMapper objectMapper) {
+//        return objectMapper.writerWithDefaultPrettyPrinter();
+//    }
 }
