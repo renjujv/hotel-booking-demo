@@ -1,0 +1,10 @@
+insert into room (PRICE, ROOM_NUMBER) values ( 150, 101 );
+insert into room (PRICE, ROOM_NUMBER) values ( 199, 102 );
+insert into room (PRICE, ROOM_NUMBER) values ( 159, 103 );
+insert into room (PRICE, ROOM_NUMBER) values ( 199, 104 );
+insert into room (PRICE, ROOM_NUMBER) values ( 299, 105 );
+insert into room (PRICE, ROOM_NUMBER) values ( 250, 201 );
+insert into room (PRICE, ROOM_NUMBER) values ( 299, 202 );
+insert into room (PRICE, ROOM_NUMBER) values ( 259, 203 );
+insert into room (PRICE, ROOM_NUMBER) values ( 299, 204 );
+insert into room (PRICE, ROOM_NUMBER) values ( 399, 205 );

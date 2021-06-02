@@ -1,0 +1,11 @@
+CREATE TABLE country (
+    id   INTEGER      NOT NULL AUTO_INCREMENT,
+    name VARCHAR(128) NOT NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE Room (
+    id INTEGER NOT NULL AUTO_INCREMENT,
+    roomNumber INTEGER NOT NULL,
+    price VARCHAR(10) NOT NULL
+)
