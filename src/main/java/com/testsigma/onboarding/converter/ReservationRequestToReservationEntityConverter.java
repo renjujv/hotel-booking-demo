@@ -1,25 +1,26 @@
 package com.testsigma.onboarding.converter;
 
-import com.testsigma.onboarding.entity.ReservationEntity;
+import com.testsigma.onboarding.entity.Reservation;
 import com.testsigma.onboarding.model.request.ReservationRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.converter.Converter;
 
 @Slf4j
-public class ReservationRequestToReservationEntityConverter implements Converter<ReservationRequest, ReservationEntity> {
+public class ReservationRequestToReservationEntityConverter implements Converter<ReservationRequest, Reservation> {
 
     @Override
-    public ReservationEntity convert(ReservationRequest source) {
+    public Reservation convert(ReservationRequest source) {
         log.debug("Reservation Request {}",source.toString());
-        ReservationEntity reservationEntity = new ReservationEntity();
-        if(source.getId() != null && reservationEntity.getId()==null) reservationEntity.setId(source.getId());
-        reservationEntity.setCheckin(source.getCheckin());
-        reservationEntity.setCheckout(source.getCheckout());
+        Reservation reservation = new Reservation();
+        if(source.getId() != null && reservation.getId()==null) reservation.setId(source.getId());
+        reservation.setCheckin(source.getCheckin());
+        reservation.setCheckout(source.getCheckout());
+        reservation.setRoomNumber(source.getRoomId());
 
         // Reservation request ID is obtained from request and is currently supposed to be null.
         // Only RoomID, checkin and checkout dates are provided.
         //TODO Add validation for PUT request and allow updating reservation by ID
-        log.debug("Reservation Entity {}",reservationEntity.toString());
-        return reservationEntity;
+        log.debug("Reservation Entity {}", reservation.toString());
+        return reservation;
     }
 }

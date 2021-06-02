@@ -1,15 +1,15 @@
 package com.testsigma.onboarding.converter;
 
-import com.testsigma.onboarding.entity.ReservationEntity;
+import com.testsigma.onboarding.entity.Reservation;
 import com.testsigma.onboarding.model.response.ReservationResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.converter.Converter;
 
 @Slf4j
-public class ReservationEntityToReservationResponseConverter implements Converter<ReservationEntity, ReservationResponse> {
+public class ReservationEntityToReservationResponseConverter implements Converter<Reservation, ReservationResponse> {
 
     @Override
-    public ReservationResponse convert(ReservationEntity source) {
+    public ReservationResponse convert(Reservation source) {
         log.debug("Reservation Entity: {}"+source.toString());
         ReservationResponse reservationResponse = new ReservationResponse();
         reservationResponse.setCheckin(source.getCheckin());

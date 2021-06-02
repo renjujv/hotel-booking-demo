@@ -1,8 +1,8 @@
 package com.testsigma.onboarding.rest;
 
 import com.testsigma.onboarding.converter.RoomEntityToReservableRoomResponseConverter;
-import com.testsigma.onboarding.entity.ReservationEntity;
-import com.testsigma.onboarding.entity.RoomEntity;
+import com.testsigma.onboarding.entity.Reservation;
+import com.testsigma.onboarding.entity.Room;
 import com.testsigma.onboarding.model.request.ReservationRequest;
 import com.testsigma.onboarding.model.response.ReservableRoomResponse;
 import com.testsigma.onboarding.model.response.ReservationResponse;
@@ -56,7 +56,7 @@ public class ReservationResource {
         } catch(DateTimeParseException dateTimeParseException){
             throw new RuntimeException("Please check the given date format is same as "+expectedDateFormat,dateTimeParseException);
         }
-        Page<RoomEntity> roomEntityList = pageableRoomRepository.findAll(pageable);
+        Page<Room> roomEntityList = pageableRoomRepository.findAll(pageable);
         Page<ReservableRoomResponse> reservableRoomResponses = roomEntityList
                 .map(RoomEntityToReservableRoomResponseConverter::converter);
         reservableRoomResponses.stream().forEach((reservableRoomResponse -> log.debug(reservableRoomResponse.toString())));
@@ -64,16 +64,16 @@ public class ReservationResource {
     }
 
     @GetMapping(path = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<RoomEntity>> getAllAvailableRooms(){
-        List<RoomEntity> roomEntity = roomRepository.findAll();
-        return new ResponseEntity<List<RoomEntity>>(roomEntity,HttpStatus.OK);
+    public ResponseEntity<List<Room>> getAllAvailableRooms(){
+        List<Room> room = roomRepository.findAll();
+        return new ResponseEntity<List<Room>>(room,HttpStatus.OK);
     }
 
     @GetMapping(path = "/{roomId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<RoomEntity> getRoomById(
+    public ResponseEntity<Room> getRoomById(
             @PathVariable Integer roomId) {
-        RoomEntity roomEntity = roomRepository.findById(roomId).orElse(new RoomEntity(0,"0"));
-        return new ResponseEntity<RoomEntity>(roomEntity,HttpStatus.OK);
+        Room room = roomRepository.findById(roomId).orElse(new Room(0,"0"));
+        return new ResponseEntity<Room>(room,HttpStatus.OK);
     }
 
     //TODO Avoid reservation creation with unavailable room ID by checking roomEntity presence in roomRepository
@@ -81,17 +81,17 @@ public class ReservationResource {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ReservationResponse> createReservation(
             @RequestBody ReservationRequest reservationRequest) {
-        ReservationEntity reservationEntity = conversionService.convert(reservationRequest,ReservationEntity.class);
-        reservationRepository.save((reservationEntity!=null)?reservationEntity:new ReservationEntity());
+        Reservation reservation = conversionService.convert(reservationRequest, Reservation.class);
+        reservationRepository.save(reservation);
+        Room room = roomRepository.findById(reservationRequest.getRoomId())
+                .orElse(new Room(0,"Dummy Room"));
+        room.addReservation(reservation);
+        roomRepository.save(room);
+        assert reservation != null;
+        reservation.setBookedRoom(room);
+        reservationRepository.save(reservation);
 
-        RoomEntity roomEntity = roomRepository.findById(reservationRequest.getRoomId()).orElse(new RoomEntity(0,"0"));
-        roomEntity.addReservationEntity(reservationEntity);
-        roomRepository.save(roomEntity);
-        assert reservationEntity != null;
-        reservationEntity.setRoomEntity(roomEntity);
-        reservationRepository.save(reservationEntity);
-
-        ReservationResponse reservationResponse = conversionService.convert(reservationEntity,ReservationResponse.class);
+        ReservationResponse reservationResponse = conversionService.convert(reservation,ReservationResponse.class);
         return new ResponseEntity<>(reservationResponse,HttpStatus.CREATED);
     }
 
@@ -101,22 +101,22 @@ public class ReservationResource {
             @PathVariable Integer reservationId,
             @RequestBody ReservationRequest reservationRequest) {
         String message = "Need 'room id', 'checkin date', and 'checkout date' to update reservation. Please add the missing values.";
-        ReservationEntity reservationEntity = reservationRepository.findById(reservationId).get();
+        Reservation reservation = reservationRepository.findById(reservationId).get();
         if(reservationRequest.getRoomId()==null
                 || reservationRequest.getCheckout()==null
                 || reservationRequest.getCheckin()==null) {
             throw new RuntimeException(message);
         } else {
-            reservationEntity.setCheckin(reservationRequest.getCheckin());
-            reservationEntity.setCheckout(reservationRequest.getCheckout());
+            reservation.setCheckin(reservationRequest.getCheckin());
+            reservation.setCheckout(reservationRequest.getCheckout());
 
-            RoomEntity roomEntity = roomRepository.findById(reservationRequest.getRoomId()).orElse(new RoomEntity(0, "0"));
-            roomEntity.addReservationEntity(reservationEntity);
-            roomRepository.save(roomEntity);
-            reservationEntity.setRoomEntity(roomEntity);
-            reservationRepository.save(reservationEntity);
+            Room room = roomRepository.findById(reservationRequest.getRoomId()).orElse(new Room(0, "0"));
+            room.addReservation(reservation);
+            roomRepository.save(room);
+            reservation.setBookedRoom(room);
+            reservationRepository.save(reservation);
         }
-            ReservationResponse reservationResponse = conversionService.convert(reservationEntity,ReservationResponse.class);
+            ReservationResponse reservationResponse = conversionService.convert(reservation,ReservationResponse.class);
         return new ResponseEntity<>(reservationResponse,HttpStatus.ACCEPTED);
     }
 
@@ -127,9 +127,9 @@ public class ReservationResource {
         String RESERVATION_DOESNOT_EXIST = String.format("Reservation with id %s does not exist. Please check the reservation Id again.",reservationId);
         String RESERVATION_DELETED = String.format("Reservation with id %s deleted successfully.",reservationId);
         if(reservationRepository.existsById(reservationId)){
-            ReservationEntity reservationEntity = reservationRepository.findById(reservationId).orElseThrow(
+            Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(
                     () -> new EntityNotFoundException(String.format(RESERVATION_DOESNOT_EXIST,reservationId)));
-            reservationRepository.delete(reservationEntity);
+            reservationRepository.delete(reservation);
             return new ResponseEntity<>(RESERVATION_DELETED,HttpStatus.ACCEPTED);
         } else return new ResponseEntity<>(RESERVATION_DOESNOT_EXIST,HttpStatus.NOT_FOUND);
     }

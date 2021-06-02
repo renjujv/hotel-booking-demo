@@ -1,6 +1,6 @@
 package com.testsigma.onboarding.converter;
 
-import com.testsigma.onboarding.entity.RoomEntity;
+import com.testsigma.onboarding.entity.Room;
 import com.testsigma.onboarding.model.Links;
 import com.testsigma.onboarding.model.Self;
 import com.testsigma.onboarding.model.response.ReservableRoomResponse;
@@ -9,10 +9,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.converter.Converter;
 
 @Slf4j
-public class RoomEntityToReservableRoomResponseConverter implements Converter<RoomEntity, ReservableRoomResponse> {
+public class RoomEntityToReservableRoomResponseConverter implements Converter<Room, ReservableRoomResponse> {
 
-    public static ReservableRoomResponse converter(RoomEntity source) {
-        log.debug("Room Entity: {}"+source.toString());
+    public static ReservableRoomResponse converter(Room source) {
+//        log.debug("Room Entity: {}"+source.toString());
         ReservableRoomResponse reservableRoomResponse = new ReservableRoomResponse();
         reservableRoomResponse.setRoomNumber(source.getRoomNumber());
         reservableRoomResponse.setPrice(Integer.valueOf(source.getPrice()));
@@ -33,7 +33,7 @@ public class RoomEntityToReservableRoomResponseConverter implements Converter<Ro
     }
 
     @Override
-    public ReservableRoomResponse convert(RoomEntity roomEntity){
+    public ReservableRoomResponse convert(Room room){
         log.error("Calling unintended converter in RoomEntityToReservableRoomResponseConverter");
         return null;
     }
