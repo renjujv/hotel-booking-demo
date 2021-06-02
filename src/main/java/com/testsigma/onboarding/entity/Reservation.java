@@ -10,7 +10,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "RESERVATION")
-@NoArgsConstructor @ToString
+@NoArgsConstructor
 public class Reservation {
 
     @Id @Getter @Setter @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,5 +34,15 @@ public class Reservation {
         this.checkin = checkin;
         this.checkout = checkout;
         this.bookedRoom = bookedRoom;
+    }
+
+    @Override
+    public String toString() {
+        return "Reservation{" +
+                "id=" + id +
+                ", checkin=" + checkin +
+                ", checkout=" + checkout +
+                ", bookedRoom=" + (bookedRoom==null?"null":bookedRoom.getRoomNumber()) +
+                '}';
     }
 }
