@@ -15,7 +15,6 @@ public class ReservationRequestToReservationEntityConverter implements Converter
         if(source.getId() != null && reservation.getId()==null) reservation.setId(source.getId());
         reservation.setCheckin(source.getCheckin());
         reservation.setCheckout(source.getCheckout());
-        reservation.setRoomNumber(source.getRoomId());
 
         // Reservation request ID is obtained from request and is currently supposed to be null.
         // Only RoomID, checkin and checkout dates are provided.
