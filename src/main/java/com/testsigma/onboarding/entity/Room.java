@@ -27,7 +27,6 @@ public class Room {
     @NotNull @Getter @Setter
     private String price;
 
-    @JsonIgnore
     @Getter @Setter
     @OneToMany(mappedBy = "bookedRoom",fetch = FetchType.EAGER, cascade = CascadeType.PERSIST )
     private List<Reservation> reservationsList;
