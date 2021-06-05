@@ -21,7 +21,7 @@ public class H2BootStrapData implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         log.info("Bootstrapping data in H2...");
-        for(int i=0;i<3;i++) roomRepository.save(new Room(101+i,String.valueOf(200+(i*2))));
+        for(int i=0;i<20;i++) roomRepository.save(new Room(101+i,String.valueOf(200+(i*2))));
         reservationRepository.save(new Reservation(
                 LocalDate.parse("2021-02-02"), LocalDate.parse("2021-02-22"),getRoomById(1)));
         reservationRepository.save(new Reservation(
