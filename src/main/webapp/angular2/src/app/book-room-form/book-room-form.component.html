@@ -1,30 +1,36 @@
 <div class="row">
   <div class="col-12">
     <br>
-    <h1 class="section-heading">Book a Room</h1>
-    <button class="btn btn-primary btn-sm" type="button" (click)="updateSampleInput()">Add Values</button>
-    <form class="form-horizontal" [formGroup]="roomSearch" (ngSubmit)="onSubmit(roomSearch)" (reset)="resetForm()">
-      <div class="form-group form-row">
-        <label for="checkin" class="col-4 font-weight-bold">Check-in:</label>
-        <input id="checkin" class="col-8 form-control" type="date" formControlName="checkin" required
-               [ngClass]="{'pattern-invalid':myform.checkin.errors?.pattern && (myform.checkin.dirty || myform.checkin.touched),
+    <div class="col-3"></div>
+    <div class="col-6 form-section">
+      <div class="section-heading">
+        <h1 class="section-heading">Book a Room</h1>
+        <button class=" offset-5 btn btn-primary btn-sm" type="button" (click)="updateSampleInput()">Add Values</button>
+      </div>
+      <form class="form-horizontal" [formGroup]="roomSearch" (ngSubmit)="onSubmit(roomSearch)" (reset)="resetForm()">
+        <div class="form-group form-row">
+          <label for="checkin" class="col-2 font-weight-bold">Check-in:</label>
+          <input id="checkin" class="col-10 form-control" type="date" formControlName="checkin" required
+                 [ngClass]="{'pattern-invalid':myform.checkin.errors?.pattern && (myform.checkin.dirty || myform.checkin.touched),
                'required':myform.checkin.errors?.required && (myform.checkin.dirty || myform.checkin.touched) }">
-      </div>
-      <div class="form-group form-row">
-        <label for="checkout" class="col-4 font-weight-bold">Check-out:</label>
-        <input id="checkout" class="col-8 form-control valid" type="date" formControlName="checkout" required
-               [ngClass]="{'pattern-invalid':myform.checkout.errors?.pattern && (myform.checkout.dirty || myform.checkout.touched),
-               'required':myform.checkout.errors?.required && (myform.checkout.dirty || myform.checkout.touched) }">
-      </div>
-      <div class="form-group">
-        <div class="col-12">
-<!--          <p>Form Status: {{ this.roomSearch.status }}</p>-->
-          <button type="submit" class="btn btn-primary btn-lg" [disabled]="!this.roomSearch.valid">Submit</button>
-<!--          <button type="submit" class="btn btn-primary btn-lg">Submit</button>-->
-          <button type="reset" class="btn btn-warning btn-lg">Clear</button>
         </div>
-      </div>
-    </form>
+        <div class="form-group form-row">
+          <label for="checkout" class="col-2 font-weight-bold">Check-out:</label>
+          <input id="checkout" class="col-10 form-control valid" type="date" formControlName="checkout" required
+                 [ngClass]="{'pattern-invalid':myform.checkout.errors?.pattern && (myform.checkout.dirty || myform.checkout.touched),
+               'required':myform.checkout.errors?.required && (myform.checkout.dirty || myform.checkout.touched) }">
+        </div>
+        <div class="form-group">
+          <div class="offset-4 col-6">
+            <!--          <p>Form Status: {{ this.roomSearch.status }}</p>-->
+            <button type="submit" class="btn btn-primary btn-lg" [disabled]="!this.roomSearch.valid">Submit</button>
+            <!--          <button type="submit" class="btn btn-primary btn-lg">Submit</button>-->
+            <button type="reset" class="btn btn-warning btn-lg">Clear</button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="col-3"></div>
   </div>
 </div>
 <div class="row rooms-available" *ngIf="rooms" >

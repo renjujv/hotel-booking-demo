@@ -1,4 +1,3 @@
-<!--<link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" rel="stylesheet">-->
 <head>
   <title>{{title}}</title>
 </head>
@@ -31,8 +30,10 @@
           <img src="assets/images/intro_attractions.jpg" alt="Intro Gallery Attractions Sample Pictures">
           <img class="hidesm" src="assets/images/intro_wedding.jpg" alt="Intro Gallery Dining Sample Pictures">
         </div>
-        <app-book-room-form></app-book-room-form>
       </article>
+      <div id="routerout">
+          <router-outlet></router-outlet>
+      </div>
     </div>
   </div>
   <div class="scene" id="hotelinfo">

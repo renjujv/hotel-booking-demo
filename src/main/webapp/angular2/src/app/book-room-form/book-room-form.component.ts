@@ -3,6 +3,8 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {HttpClient, HttpHeaders} from "@angular/common/http"
 import {map} from "rxjs/operators";
 import {Observable} from "rxjs";
+import {AuthenticationService} from "../services/auth.service";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-book-room-form',
@@ -18,9 +20,16 @@ export class BookRoomFormComponent implements OnInit {
   currentCheckinValue:Date;
   currentCheckoutValue:Date;
 
-  constructor(private http:HttpClient) {}
+  constructor(private http:HttpClient,
+              private route:ActivatedRoute,
+              private router:Router,
+              private authenticationService:AuthenticationService) {}
 
   ngOnInit() {
+    if(!this.authenticationService.isUserLoggedIn()){
+      console.log('Not authenticated');
+      this.router.navigate(['login']);
+    } else console.log('Authenticated User');
     this.roomSearch = new FormGroup({
       //Validation for dd/mm/yyyy format using regex
       checkin: new FormControl('',
@@ -85,6 +94,10 @@ export class BookRoomFormComponent implements OnInit {
     // const checkout = '22/02/2021';
     this.myform.checkin.setValue(todaysdate);
     this.myform.checkout.setValue(todaysdate);
+  }
+
+  handleLogout() {
+    this.authenticationService.logout();
   }
 }
 
