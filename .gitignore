@@ -29,3 +29,5 @@ target/**
 .idea/.name
 .idea/*.xml
 *.iml
+
+# Angular dir - src/main/webapp/angular2

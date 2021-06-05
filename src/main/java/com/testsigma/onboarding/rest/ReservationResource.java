@@ -28,7 +28,6 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping(ResourceConstants.ROOM_RESERVATION_V1)
-@CrossOrigin
 public class ReservationResource {
     @Autowired
     PageableRoomRepository pageableRoomRepository;

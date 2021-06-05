@@ -2,38 +2,43 @@ package com.testsigma.onboarding.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 
 @EnableWebSecurity @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.authorizeRequests()
-                .antMatchers("/","/home","/room/reservation/v1","/room/reservation/v1/all").permitAll()
-                .anyRequest().authenticated()
+
+        httpSecurity.cors()
                 .and()
-            .formLogin()
-                .loginPage("/login")
-                .permitAll()
+                .authorizeRequests()
+                .antMatchers(HttpMethod.POST).hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET,"/room/reservation/v1/all","/room/reservation/v1").permitAll()
+                .antMatchers(HttpMethod.GET,"/room/reservation/v1/basicauth").hasAnyRole("ADMIN","USER")
+                .antMatchers(HttpMethod.GET,"/room/reservation/v1/{\\d+}").hasAnyRole("ADMIN","USER")
+                .antMatchers(HttpMethod.OPTIONS,"/**").permitAll()
+                .anyRequest().fullyAuthenticated()
                 .and()
-            .logout()
-                .permitAll();
+                .httpBasic();
+
+        httpSecurity.csrf().disable();
+        httpSecurity.headers().frameOptions().disable();
+    }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.inMemoryAuthentication().withUser("admin").password("admin123").roles("ADMIN");
+        auth.inMemoryAuthentication().withUser("renju").password("renju").roles("USER");
     }
 
     @Bean
-    @Override
-    public UserDetailsService userDetailsService() {
-        UserDetails user = User.withDefaultPasswordEncoder()
-                .username("admin")
-                .password("admin123")
-                .roles("USER").build();
-        return new InMemoryUserDetailsManager(user);
+    public static NoOpPasswordEncoder passwordEncoder(){
+        return (NoOpPasswordEncoder) NoOpPasswordEncoder.getInstance();
     }
 }
