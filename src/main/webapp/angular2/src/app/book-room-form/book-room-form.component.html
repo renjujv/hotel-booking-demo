@@ -3,9 +3,10 @@
     <div class="col-7 form-section">
       <div class="section-heading col-12">
         <div class="offset-4 h2">Book a Room</div>
-        <button class="offset-3 btn btn-primary btn-sm" type="button" (click)="updateSampleInput()">Add Values</button>
-        <button type="button" (click)="handleLogout()" class="btn btn-outline-secondary btn-sm">Sign Out from all</button>
+        <div class="offset-4 btn btn-primary btn-sm" type="button" (click)="updateSampleInput()">Add Values</div>
+        <div type="button" (click)="handleLogout()" class="btn btn-secondary btn-sm">Sign Out from all</div>
       </div>
+      <br>
       <div class="form-container col-12">
         <div class="col-1"></div>
         <form class="col-10 form-horizontal" [formGroup]="roomSearch" (ngSubmit)="onSubmit(roomSearch)" (reset)="resetForm()">
@@ -34,7 +35,7 @@
     <div class="col-2"></div>
 </div>
 
-<h1 *ngIf="this.roomSearch.valid && rooms">Available Rooms</h1>
+<div *ngIf="this.roomSearch.valid && rooms" class="offset-5 h2">Available Rooms</div>
 <div class="row rooms-available">
   <div class="col-3"></div>
   <div class="col-6 table-responsive">

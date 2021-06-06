@@ -12,26 +12,27 @@ h1 {
   text-align: center;
 }
 
-h2 {
-  color: blueviolet;
+div.h2 {
+  color: darkred;
+  font-weight: bold;
 }
 
-#checkin.col-8.form-control.pattern-invalid:after{
+#checkin.form-control.pattern-invalid:after{
   background-color:coral;
   content:'Invalid date';
 }
 
-#checkin.col-8.form-control.required:after{
+#checkin.form-control.required:after{
   background-color:coral;
   content:'Required';
 }
 
-#checkout.col-8.form-control.pattern-invalid:after{
+#checkout.form-control.pattern-invalid:after{
   background-color:coral;
   content:'Invalid date';
 }
 
-#checkout.col-8.form-control.required:after{
+#checkout.form-control.required:after{
   background-color:coral;
   content:'Required';
 }

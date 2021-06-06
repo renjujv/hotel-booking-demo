@@ -60,6 +60,7 @@ export class BookRoomFormComponent implements OnInit {
     this.request = new ReservationRoomRequest(value, this.currentCheckinValue,this.currentCheckoutValue);
     this.createReservation(this.request);
     console.log("Room id reserved: "+value);
+    alert("Room id reserved: "+value);
   }
 
   createReservation(body:ReservationRoomRequest) {

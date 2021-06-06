@@ -46,6 +46,10 @@ export class LoginComponent implements OnInit {
     if(sessionStorage.getItem(this.authenticationService.USER_NAME_SESSION_ATTRIBUTE_NAME)){
       console.log('already logged in');
       this.loggedIn=true;
+      setTimeout(()=> {
+        alert('Redirecting to booking page...');
+        this.router.navigate([''])
+      },3000);
     }
   }
 
