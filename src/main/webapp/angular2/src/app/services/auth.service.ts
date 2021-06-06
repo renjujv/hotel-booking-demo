@@ -1,43 +1,35 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import { map } from 'rxjs/operators';
+import {GoogleLoginProvider, SocialAuthService, SocialUser} from "angularx-social-login";
+import {Observable} from "rxjs";
 
 @Injectable()
 export class AuthenticationService {
-  // BASE_PATH: 'http://localhost:8080'
+  private AUTH_URL = 'http://localhost:8080/room/reservation/v1/basicauth';
   USER_NAME_SESSION_ATTRIBUTE_NAME = 'authenticatedUser'
+  GOOGLE_SIGNIN_SESSION_ATTRIBUTE_NAME = 'Google-signin';
+  GOOGLE_SIGNIN_USER_FULLNAME = 'Google-loggedin-user';
+  gUser:SocialUser;
 
-  public username: String;
-  public password: String;
+  constructor(private http: HttpClient,
+              private socialAuthenticator:SocialAuthService) { }
 
-  constructor(private http: HttpClient) { }
-
-  login(username:string, password:string){
-    const headers = new HttpHeaders({ Authorization: AuthenticationService.createBasicAuthToken(username,password)});
-    return this.http.get<AuthResponse>(`http://localhost:8080/room/reservation/v1/basicauth`,
-      { headers: headers}).pipe(map((res) => {
-        this.username = username;
-        this.password = password;
-        this.registerSuccessfulLogin(username);
-    }))
+  login(username:string, password:string):Observable<AuthResponse>{
+    //create auth header
+    const headers = new HttpHeaders({
+      Authorization: AuthenticationService.createBasicAuthToken(username,password)});
+    // Checking authentication with Spring security
+    return this.http.get<AuthResponse>(this.AUTH_URL,
+      { headers: headers});
   }
 
-  private static createBasicAuthToken(username: String, password: String) {
+  private static createBasicAuthToken(username:string, password:string) {
     return 'Basic ' + window.btoa(username + ":" + password)
   }
 
-  private registerSuccessfulLogin(username) {
+  registerSuccessfulLogin(username) {
     sessionStorage.setItem(this.USER_NAME_SESSION_ATTRIBUTE_NAME, username)
-  }
-
-  logout(){
-    sessionStorage.removeItem(this.USER_NAME_SESSION_ATTRIBUTE_NAME)
-  }
-
-  gLogout(){
-    sessionStorage.removeItem('Google-signin');
-    sessionStorage.removeItem('Google-loggedin-user');
-
   }
 
   isUserLoggedIn() {
@@ -47,21 +39,40 @@ export class AuthenticationService {
 
   getLoggedInUserName() {
     let user = sessionStorage.getItem(this.USER_NAME_SESSION_ATTRIBUTE_NAME) ||
-      sessionStorage.getItem('Google-loggedin-user');
+      sessionStorage.getItem(this.GOOGLE_SIGNIN_USER_FULLNAME);
     if (user === null) return ''
-    return user
+    return user;
+  }
+
+  logout(){
+    if(sessionStorage.getItem(this.USER_NAME_SESSION_ATTRIBUTE_NAME)){
+      sessionStorage.removeItem(this.USER_NAME_SESSION_ATTRIBUTE_NAME);
+    }
   }
 
   //Google sign in provider
-
-  gLogin(PROVIDER_ID: string) {
-    throw new Error("Method not implemented.");
+  gLogin():Promise<SocialUser> {
+    return this.socialAuthenticator.signIn(GoogleLoginProvider.PROVIDER_ID);
   }
 
   isGoogleUserLoggedIn() {
-    let user = sessionStorage.getItem('Google-signin');
+    let user = sessionStorage.getItem(this.GOOGLE_SIGNIN_SESSION_ATTRIBUTE_NAME);
     return user !== null;
   }
+
+  gLogout(){
+    this.socialAuthenticator.signOut().then(() => {
+      console.log('Signed out from google successfully');
+      },(reason) => {
+      console.log('Failed to sign out from google. Reason: '+reason);
+    });
+    if (sessionStorage.getItem(this.GOOGLE_SIGNIN_USER_FULLNAME)) {
+      console.log('clearing session storage...')
+      sessionStorage.removeItem(this.GOOGLE_SIGNIN_SESSION_ATTRIBUTE_NAME);
+      sessionStorage.removeItem(this.GOOGLE_SIGNIN_USER_FULLNAME);
+    }
+  }
+
 }
 
 export interface AuthResponse{

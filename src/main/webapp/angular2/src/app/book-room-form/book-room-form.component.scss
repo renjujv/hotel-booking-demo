@@ -16,10 +16,6 @@ h2 {
   color: blueviolet;
 }
 
-.form-section {
-  margin-left: 25%;
-}
-
 #checkin.col-8.form-control.pattern-invalid:after{
   background-color:coral;
   content:'Invalid date';

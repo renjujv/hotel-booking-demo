@@ -1,42 +1,43 @@
-<div class="row">
-  <div class="col-12">
-    <br>
+<div class="col-12 row">
     <div class="col-3"></div>
-    <div class="col-6 form-section">
-      <div class="section-heading">
-        <h1 class="section-heading">Book a Room</h1>
-        <button class=" offset-5 btn btn-primary btn-sm" type="button" (click)="updateSampleInput()">Add Values</button>
-        <button type="button" (click)="handleLogout()" class="btn btn-outline-secondary btn-sm">Sign Out</button>
+    <div class="col-7 form-section">
+      <div class="section-heading col-12">
+        <div class="offset-4 h2">Book a Room</div>
+        <button class="offset-3 btn btn-primary btn-sm" type="button" (click)="updateSampleInput()">Add Values</button>
+        <button type="button" (click)="handleLogout()" class="btn btn-outline-secondary btn-sm">Sign Out from all</button>
       </div>
-      <form class="form-horizontal" [formGroup]="roomSearch" (ngSubmit)="onSubmit(roomSearch)" (reset)="resetForm()">
-        <div class="form-group form-row">
-          <label for="checkin" class="col-2 font-weight-bold">Check-in:</label>
-          <input id="checkin" class="col-10 form-control" type="date" formControlName="checkin" required
-                 [ngClass]="{'pattern-invalid':myform.checkin.errors?.pattern && (myform.checkin.dirty || myform.checkin.touched),
+      <div class="form-container col-12">
+        <div class="col-1"></div>
+        <form class="col-10 form-horizontal" [formGroup]="roomSearch" (ngSubmit)="onSubmit(roomSearch)" (reset)="resetForm()">
+          <div class="form-group form-row">
+            <label for="checkin" class="col-2 font-weight-bold">Check-in:</label>
+            <input id="checkin" class="col-10 form-control" type="date" formControlName="checkin" required
+                   [ngClass]="{'pattern-invalid':myform.checkin.errors?.pattern && (myform.checkin.dirty || myform.checkin.touched),
                'required':myform.checkin.errors?.required && (myform.checkin.dirty || myform.checkin.touched) }">
-        </div>
-        <div class="form-group form-row">
-          <label for="checkout" class="col-2 font-weight-bold">Check-out:</label>
-          <input id="checkout" class="col-10 form-control valid" type="date" formControlName="checkout" required
-                 [ngClass]="{'pattern-invalid':myform.checkout.errors?.pattern && (myform.checkout.dirty || myform.checkout.touched),
-               'required':myform.checkout.errors?.required && (myform.checkout.dirty || myform.checkout.touched) }">
-        </div>
-        <div class="form-group">
-          <div class="offset-4 col-6">
-            <!--          <p>Form Status: {{ this.roomSearch.status }}</p>-->
-            <button type="submit" class="btn btn-primary btn-lg" [disabled]="!this.roomSearch.valid">Submit</button>
-            <!--          <button type="submit" class="btn btn-primary btn-lg">Submit</button>-->
-            <button type="reset" class="btn btn-warning btn-lg">Clear</button>
           </div>
-        </div>
-      </form>
+          <div class="form-group form-row">
+            <label for="checkout" class="col-2 font-weight-bold">Check-out:</label>
+            <input id="checkout" class="col-10 form-control valid" type="date" formControlName="checkout" required
+                   [ngClass]="{'pattern-invalid':myform.checkout.errors?.pattern && (myform.checkout.dirty || myform.checkout.touched),
+               'required':myform.checkout.errors?.required && (myform.checkout.dirty || myform.checkout.touched) }">
+          </div>
+          <div class="form-group">
+            <div class="offset-4 col-6">
+              <button type="submit" class="btn btn-primary btn-lg" [disabled]="!this.roomSearch.valid">Submit</button>
+              <button type="reset" class="btn btn-warning btn-lg">Clear</button>
+            </div>
+          </div>
+        </form>
+        <div class="col-1"></div>
+      </div>
     </div>
-    <div class="col-3"></div>
-  </div>
+    <div class="col-2"></div>
 </div>
-<div class="row rooms-available" *ngIf="rooms" >
-  <h1 *ngIf="this.roomSearch.valid">Available Rooms</h1>
-    <div class="table-responsive">
+
+<h1 *ngIf="this.roomSearch.valid && rooms">Available Rooms</h1>
+<div class="row rooms-available">
+  <div class="col-3"></div>
+  <div class="col-6 table-responsive">
       <table class="col-12 table table-hover">
         <tbody>
         <tr class="margin-md-horizontal" *ngFor="let room of rooms">
@@ -54,4 +55,5 @@
         </tbody>
       </table>
     </div>
+  <div class="col-3"></div>
 </div>

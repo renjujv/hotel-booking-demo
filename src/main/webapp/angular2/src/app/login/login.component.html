@@ -2,7 +2,7 @@
   <h1 class="text-center">Login</h1>
   <div class="card">
     <div class="card-body">
-      <form class="form-group" [formGroup]="loginForm" (ngSubmit)="handleLogin(loginForm)">
+      <form *ngIf="loggedIn===false" class="form-group" [formGroup]="loginForm" (ngSubmit)="signIn(loginForm)">
         <div class="alert alert-warning" *ngIf='invalidLogin'>{{errorMessage}}</div>
         <div class="alert alert-success" *ngIf='loginSuccess'>{{successMessage}}</div>
         <div class="form-group">
@@ -21,18 +21,19 @@
         </div>
       </form>
 <!--      start social login-->
-      <div *ngIf="loggedIn===true">
+      <div *ngIf="loggedIn===true || gLoggedIn===true" class="alert alert-success">Signed in! Redirecting to booking page...</div>
+      <div *ngIf="loggedIn===true && gLoggedIn===true">
         <div class="form-group">
           <label for="firstname">First Name</label>
-          <input type="text" class="form-control" id="firstname" [value]="user.firstName" readonly >
+          <input type="text" class="form-control" id="firstname" [value]="gUser.firstName" readonly >
         </div>
         <div class="form-group">
           <label for="lastname">Last Name</label>
-          <input type="text" class="form-control" id="lastname" [value]="user.lastName" readonly >
+          <input type="text" class="form-control" id="lastname" [value]="gUser.lastName" readonly >
         </div>
         <div class="form-group">
           <label for="email2">Email</label>
-          <input type="text" class="form-control" id="email2" [value]="user.email" readonly >
+          <input type="text" class="form-control" id="email2" [value]="gUser.email" readonly >
         </div>
         <button type="button" (click)="gSignOut()" class="btn btn-primary">Sign Out</button>
       </div>
