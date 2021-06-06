@@ -6,6 +6,7 @@
       <div class="section-heading">
         <h1 class="section-heading">Book a Room</h1>
         <button class=" offset-5 btn btn-primary btn-sm" type="button" (click)="updateSampleInput()">Add Values</button>
+        <button type="button" (click)="handleLogout()" class="btn btn-outline-secondary btn-sm">Sign Out</button>
       </div>
       <form class="form-horizontal" [formGroup]="roomSearch" (ngSubmit)="onSubmit(roomSearch)" (reset)="resetForm()">
         <div class="form-group form-row">

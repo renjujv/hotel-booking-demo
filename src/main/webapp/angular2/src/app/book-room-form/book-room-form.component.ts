@@ -26,7 +26,7 @@ export class BookRoomFormComponent implements OnInit {
               private authenticationService:AuthenticationService) {}
 
   ngOnInit() {
-    if(!this.authenticationService.isUserLoggedIn()){
+    if(!this.authenticationService.isUserLoggedIn() && !this.authenticationService.isGoogleUserLoggedIn()){
       console.log('Not authenticated');
       this.router.navigate(['login']);
     } else console.log('Authenticated User');
@@ -98,6 +98,9 @@ export class BookRoomFormComponent implements OnInit {
 
   handleLogout() {
     this.authenticationService.logout();
+    this.authenticationService.gLogout();
+    this.router.navigate(['/login']);
+
   }
 }
 

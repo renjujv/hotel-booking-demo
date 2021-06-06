@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {AuthenticationService} from "../services/auth.service";
+import {SocialAuthService} from "angularx-social-login";
 
 @Component({
   selector: 'app-logout',
@@ -12,7 +13,8 @@ export class LogoutComponent implements OnInit {
 
   constructor(private route:ActivatedRoute,
               private router:Router,
-              private authenticationService:AuthenticationService) { }
+              private authenticationService:AuthenticationService,
+              private socialAuthService:SocialAuthService) { }
 
   ngOnInit(): void {
     this.authenticationService.logout();

@@ -34,16 +34,33 @@ export class AuthenticationService {
     sessionStorage.removeItem(this.USER_NAME_SESSION_ATTRIBUTE_NAME)
   }
 
-  isUserLoggedIn() {
-    let user = sessionStorage.getItem(this.USER_NAME_SESSION_ATTRIBUTE_NAME)
-    return user !== null;
+  gLogout(){
+    sessionStorage.removeItem('Google-signin');
+    sessionStorage.removeItem('Google-loggedin-user');
 
   }
 
-  getLoggedInUserName() {
+  isUserLoggedIn() {
     let user = sessionStorage.getItem(this.USER_NAME_SESSION_ATTRIBUTE_NAME)
+    return user !== null;
+  }
+
+  getLoggedInUserName() {
+    let user = sessionStorage.getItem(this.USER_NAME_SESSION_ATTRIBUTE_NAME) ||
+      sessionStorage.getItem('Google-loggedin-user');
     if (user === null) return ''
     return user
+  }
+
+  //Google sign in provider
+
+  gLogin(PROVIDER_ID: string) {
+    throw new Error("Method not implemented.");
+  }
+
+  isGoogleUserLoggedIn() {
+    let user = sessionStorage.getItem('Google-signin');
+    return user !== null;
   }
 }
 
