@@ -61,6 +61,10 @@ export class AuthenticationService {
     return user !== null;
   }
 
+  gRefreshToken(): void {
+    this.socialAuthenticator.refreshAuthToken(GoogleLoginProvider.PROVIDER_ID);
+  }
+
   gLogout(){
     if(!this.isGoogleUserLoggedIn()) console.log('Not logged into google.');
     else {
