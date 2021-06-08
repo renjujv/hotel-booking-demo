@@ -23,7 +23,7 @@ public class Reservation {
     @Getter @Setter @NotNull
     private LocalDate checkout;
 
-    @Getter @Setter @ManyToOne(targetEntity = Room.class)
+    @Getter @Setter @ManyToOne(targetEntity = Room.class) @JoinColumn(name="Booked_Room_Id")
     private Room bookedRoom;
 
     public Reservation(@NotNull LocalDate checkin, @NotNull LocalDate checkout, Room bookedRoom) {

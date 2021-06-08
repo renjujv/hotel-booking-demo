@@ -11,7 +11,11 @@ public class BasicAuthController {
 
     @GetMapping(path = "/basicauth")
     public AuthenticationBean getBasicAuth(){
-        return new AuthenticationBean("You are authenticated");
+        return new AuthenticationBean("You are authenticated.");
     }
 
+    @GetMapping(path = "/basicauthdummy")
+    public AuthenticationBean getBasicAuthDummy(){
+        return new AuthenticationBean("Not really authenticated. Dummy Auth.");
+    }
 }

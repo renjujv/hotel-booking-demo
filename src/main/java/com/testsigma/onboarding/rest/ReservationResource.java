@@ -105,12 +105,12 @@ public class ReservationResource {
     public ResponseEntity<ReservationResponse> createReservation(
             @RequestBody ReservationRequest reservationRequest) {
         Reservation reservation = conversionService.convert(reservationRequest, Reservation.class);
+        assert reservation != null;
         reservationRepository.save(reservation);
         Room room = roomRepository.findById(reservationRequest.getRoomId())
                 .orElse(new Room(0,"Dummy Room"));
         room.addReservation(reservation);
         roomRepository.save(room);
-        assert reservation != null;
         reservation.setBookedRoom(room);
         reservationRepository.save(reservation);
 
@@ -132,7 +132,8 @@ public class ReservationResource {
             @PathVariable Integer reservationId,
             @RequestBody ReservationRequest reservationRequest) {
         String message = "Need 'room id', 'checkin date', and 'checkout date' to update reservation. Please add the missing values.";
-        Reservation reservation = reservationRepository.findById(reservationId).get();
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElse(new Reservation(LocalDate.now(),LocalDate.now(),new Room(0,"Dummy")));
         if(reservationRequest.getRoomId()==null
                 || reservationRequest.getCheckout()==null
                 || reservationRequest.getCheckin()==null) {
