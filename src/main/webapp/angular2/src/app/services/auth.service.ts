@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import { map } from 'rxjs/operators';
 import {GoogleLoginProvider, SocialAuthService, SocialUser} from "angularx-social-login";
 import {Observable} from "rxjs";
 
@@ -8,14 +7,18 @@ import {Observable} from "rxjs";
 export class AuthenticationService {
   private AUTH_URL = 'http://localhost:8080/room/reservation/v1/basicauth';
   USER_NAME_SESSION_ATTRIBUTE_NAME = 'authenticatedUser'
-  GOOGLE_SIGNIN_SESSION_ATTRIBUTE_NAME = 'Google-signin';
-  GOOGLE_SIGNIN_USER_FULLNAME = 'Google-loggedin-user';
-  gUser:SocialUser;
+  GOOGLE_SIGNIN_SESSION_ATTRIBUTE_NAME = 'G-User';
+  GOOGLE_SIGNIN_USERNAME = 'G-Username';
+  username: string;
+  password: string;
+
 
   constructor(private http: HttpClient,
-              private socialAuthenticator:SocialAuthService) { }
+              private socialAuthenticator:SocialAuthService) {}
 
   login(username:string, password:string):Observable<AuthResponse>{
+    this.username=username;
+    this.password=password;
     //create auth header
     const headers = new HttpHeaders({
       Authorization: AuthenticationService.createBasicAuthToken(username,password)});
@@ -37,17 +40,15 @@ export class AuthenticationService {
     return user !== null;
   }
 
-  getLoggedInUserName() {
-    let user = sessionStorage.getItem(this.USER_NAME_SESSION_ATTRIBUTE_NAME) ||
-      sessionStorage.getItem(this.GOOGLE_SIGNIN_USER_FULLNAME);
-    if (user === null) return ''
-    return user;
+  getLoggedInUsername() {
+    if(this.isUserLoggedIn()) return sessionStorage.getItem(this.USER_NAME_SESSION_ATTRIBUTE_NAME);
+    else if(this.isGoogleUserLoggedIn()) return sessionStorage.getItem(this.GOOGLE_SIGNIN_USERNAME);
+    else return '';
   }
 
   logout(){
-    if(sessionStorage.getItem(this.USER_NAME_SESSION_ATTRIBUTE_NAME)){
-      sessionStorage.removeItem(this.USER_NAME_SESSION_ATTRIBUTE_NAME);
-    }
+    if(!this.isUserLoggedIn()) console.log('Not logged in.');
+    else sessionStorage.removeItem(this.USER_NAME_SESSION_ATTRIBUTE_NAME);
   }
 
   //Google sign in provider
@@ -61,18 +62,22 @@ export class AuthenticationService {
   }
 
   gLogout(){
-    this.socialAuthenticator.signOut().then(() => {
-      console.log('Signed out from google successfully');
+    if(!this.isGoogleUserLoggedIn()) console.log('Not logged into google.');
+    else {
+      this.socialAuthenticator.signOut().then(() => {
+        console.log('Signed out from google successfully. Clearing session storage...');
+        sessionStorage.removeItem(this.GOOGLE_SIGNIN_SESSION_ATTRIBUTE_NAME);
+        sessionStorage.removeItem(this.GOOGLE_SIGNIN_USERNAME);
       },(reason) => {
-      console.log('Failed to sign out from google. Reason: '+reason);
-    });
-    if (sessionStorage.getItem(this.GOOGLE_SIGNIN_USER_FULLNAME)) {
-      console.log('clearing session storage...')
-      sessionStorage.removeItem(this.GOOGLE_SIGNIN_SESSION_ATTRIBUTE_NAME);
-      sessionStorage.removeItem(this.GOOGLE_SIGNIN_USER_FULLNAME);
+        console.log('Failed to sign out from google. Reason: '+reason);
+      });
     }
   }
 
+  registerSuccessfulGLogin(gUser: SocialUser) {
+    sessionStorage.setItem(this.GOOGLE_SIGNIN_SESSION_ATTRIBUTE_NAME, JSON.stringify(gUser));
+    sessionStorage.setItem(this.GOOGLE_SIGNIN_USERNAME, gUser.email);
+  }
 }
 
 export interface AuthResponse{

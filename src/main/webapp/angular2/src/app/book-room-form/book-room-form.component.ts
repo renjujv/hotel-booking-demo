@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {HttpClient, HttpHeaders} from "@angular/common/http"
 import {map} from "rxjs/operators";
-import {Observable} from "rxjs";
+import {Observable, Subscription} from "rxjs";
 import {AuthenticationService} from "../services/auth.service";
 import {ActivatedRoute, Router} from "@angular/router";
 
@@ -13,6 +13,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 })
 
 export class BookRoomFormComponent implements OnInit {
+  private subscriptions:Subscription;
   roomSearch: FormGroup;
   rooms: Room[];
   private baseUrl:string = 'http://localhost:8080';
@@ -41,7 +42,7 @@ export class BookRoomFormComponent implements OnInit {
     //
 
     const roomSearchValueChanges$ = this.roomSearch.valueChanges;
-    roomSearchValueChanges$.subscribe( valueChange => {
+    this.subscriptions = roomSearchValueChanges$.subscribe( valueChange => {
       this.currentCheckinValue = valueChange.checkin;
       this.currentCheckoutValue = valueChange.checkout;
       }
@@ -50,7 +51,7 @@ export class BookRoomFormComponent implements OnInit {
 
   onSubmit({value}:{value:RoomSearch}) {
     console.log("clicked on submit. Updating rooms...");
-    this.getAll().subscribe(
+    this.subscriptions = this.getAll().subscribe(
       rooms => this.rooms = rooms,
       error => console.error(error));
   }
@@ -68,7 +69,7 @@ export class BookRoomFormComponent implements OnInit {
     let headers = new HttpHeaders({'Content-Type':'application/json'});
     const options = {headers: headers};
 
-    this.http.post(this.baseUrl+'/room/reservation/v1',bodyString,options)
+    this.subscriptions = this.http.post(this.baseUrl+'/room/reservation/v1',bodyString,options)
       .subscribe(res => console.log(res));
   }
 
@@ -101,7 +102,10 @@ export class BookRoomFormComponent implements OnInit {
     this.authenticationService.logout();
     this.authenticationService.gLogout();
     this.router.navigate(['/login']);
+  }
 
+  ngOnDestroy(){
+    this.subscriptions.unsubscribe();
   }
 }
 

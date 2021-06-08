@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {AuthenticationService} from "../services/auth.service";
-import {AbstractControl, FormControl, FormGroup, Validators} from "@angular/forms";
+import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {GoogleLoginProvider, SocialAuthService, SocialUser} from "angularx-social-login";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-login',
@@ -11,7 +12,9 @@ import {GoogleLoginProvider, SocialAuthService, SocialUser} from "angularx-socia
 })
 
 export class LoginComponent implements OnInit {
-  counter:FormControl;
+  private subscriptions:Subscription;
+  private usernameRegex = '^([0-9]|[a-z]|[A-Z]|[_]){2,20}$';
+  private passwordRegex = '^([0-9]|[a-z]|[A-Z]|[@_#$!%&*^()[],:;?]){2,20}$'
   loginForm: FormGroup;
   errorMessage = 'Invalid Credentials';
   successMessage:string;
@@ -26,78 +29,60 @@ export class LoginComponent implements OnInit {
               private socialAuthenticationService: SocialAuthService) {}
 
   ngOnInit(): void {
-    this.loggedIn=false;
-    this.gLoggedIn=false;
+    this.loggedIn = this.gLoggedIn = false;
     this.loginForm = new FormGroup({
       //Validation for username and password
       username: new FormControl('',
-        [Validators.required,Validators.pattern("^([0-9]|[a-z]|[A-Z]|[_]){2,20}$")]),
+        [Validators.required,Validators.pattern(this.usernameRegex)]),
       password: new FormControl('',
-        [Validators.required,Validators.pattern("^([0-9]|[a-z]|[A-Z]|[@_#$!%&*^()[],:;?]){2,20}$")]),
+        [Validators.required,Validators.pattern(this.passwordRegex)]),
     });
 
-    //add gSignin Subscriber
-    if(sessionStorage.getItem(this.authenticationService.GOOGLE_SIGNIN_USER_FULLNAME)){
-      console.log('google already logged in');
-      this.gUser = JSON.parse(sessionStorage.getItem(this.authenticationService.GOOGLE_SIGNIN_SESSION_ATTRIBUTE_NAME));
-      this.loggedIn=true;
-      this.gLoggedIn=true;
-    }
-    if(sessionStorage.getItem(this.authenticationService.USER_NAME_SESSION_ATTRIBUTE_NAME)){
-      console.log('already logged in');
-      this.loggedIn=true;
-      setTimeout(()=> {
-        alert('Redirecting to booking page...');
-        this.router.navigate([''])
-      },3000);
+    //redirect if authenticated
+    if(this.authenticationService.isUserLoggedIn()){
+      this.loggedIn = true;
+      console.log('Already logged in.');
+      if(this.authenticationService.isGoogleUserLoggedIn()){
+        console.log('Using Google sign-in.');
+        this.gLoggedIn=true;
+      }
+      this.redirectAfterTimeoutWithAlert('',2000,'Redirected to landing page');
     }
   }
 
+  // signIn({value}:{value:LoginDetails}): void {
   signIn({value}:{value:LoginDetails}): void {
-    console.log('Trying to log in');
-    this.authenticationService.login(value.username,value.password).subscribe((response)=>{
-      this.loggedIn=true;
-      this.authenticationService.registerSuccessfulLogin(value.username);
-      this.loginSuccess = true;
-      this.invalidLogin = false;
-      this.successMessage = 'Welcome '+this.authenticationService.getLoggedInUserName();
-      console.log('Logged in');
-      setTimeout(() => {this.router.navigate(['/']);},2000);
-    },(error)=>{
-      console.log('Need Authentication. Routing to login page.');
-      this.router.navigate(['/login']);
-      this.loginSuccess = false;
-      this.loggedIn=false;
-      this.invalidLogin = true;
-    });
+    console.log('Trying to log in...');
+    this.subscriptions = this.authenticationService.login(value.username,value.password)
+      .subscribe(()=>{
+        this.loggedIn = this.loginSuccess = true;
+        this.gLoggedIn = this.invalidLogin = false;
+        this.authenticationService.registerSuccessfulLogin(value.username);
+        this.successMessage = 'Welcome '+this.authenticationService.getLoggedInUsername();
+        console.log('Logged in');
+        this.redirectAfterTimeoutWithAlert('',2000,'Redirected to landing page');
+        },(error) => {
+        console.log('Login failed. Reason for failure:');
+        console.dir(error);
+        this.loginSuccess = this.loggedIn=false;
+        this.invalidLogin = true;
+      });
   }
 
   signInWithGoogle(): void {
-    console.log('Trying google log in');
+    console.log('Trying google log in...');
     this.authenticationService.gLogin().then(
       (socialUser) => {
         this.gUser = socialUser;
-        this.loggedIn = true;
-        this.gLoggedIn=true;
-        this.loginSuccess = true;
-        this.invalidLogin = false;
+        this.loginSuccess = this.loggedIn = this.gLoggedIn = true;
         this.successMessage = 'Welcome '+this.gUser.name;
-        console.log('Logged in with Google');
-        let googleUserFullName = socialUser.name;
-        sessionStorage.setItem(this.authenticationService.GOOGLE_SIGNIN_SESSION_ATTRIBUTE_NAME, JSON.stringify(this.gUser));
-        sessionStorage.setItem(this.authenticationService.GOOGLE_SIGNIN_USER_FULLNAME, googleUserFullName);
-        setTimeout(()=> {
-          alert('Redirecting to booking page...');
-          this.router.navigate([''])
-        },3000);
-      },
-      (reason)=>{
-        console.log(reason);
-        this.loggedIn = false;
-        this.gLoggedIn=false;
-        this.loginSuccess = false;
+        this.authenticationService.registerSuccessfulGLogin(this.gUser);
+        console.log('Logged in with Google.');
+        this.redirectAfterTimeoutWithAlert('',2000,'Redirected to landing page');
+      },(reason) => {
+        this.loggedIn = this.gLoggedIn = this.loginSuccess = false;
         this.invalidLogin = true;
-        console.log('Google login failed');
+        console.log('Google login failed. Reason: '+reason);
       });
   }
 
@@ -113,6 +98,23 @@ export class LoginComponent implements OnInit {
 
   get f(){
     return this.loginForm.controls;
+  }
+
+  redirectAfterTimeoutWithAlert(path:string,milliseconds:number,successMessage:string){
+    setTimeout(() => {
+        this.router.navigate([path])
+          .then((navigated)=> {
+            if(navigated) console.log(successMessage);
+            else console.error('Failed to navigate to " '+path+'".');
+            },
+            (error)=>{console.log('Failed to route to " '+path+'". Reason: '+error);})
+      }
+      ,milliseconds);
+  }
+
+  ngOnDestroy(){
+    console.log('Unsubscribing from login component observer.');
+    this.subscriptions.unsubscribe();
   }
 
 }
