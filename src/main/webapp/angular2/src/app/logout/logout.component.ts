@@ -14,7 +14,9 @@ export class LogoutComponent implements OnInit {
   constructor(private route:ActivatedRoute,
               private router:Router,
               private authenticationService:AuthenticationService,
-              private socialAuthService:SocialAuthService) { }
+              private socialAuthService:SocialAuthService) {
+    // console.log('Created logout page comp');
+  }
 
   ngOnInit(): void {
     this.authenticationService.logout();

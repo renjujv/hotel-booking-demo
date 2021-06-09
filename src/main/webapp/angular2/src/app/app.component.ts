@@ -11,6 +11,7 @@ export class AppComponent{
   title = 'Hotel Transylvania';
 
   public constructor(private titleService: Title) {
+    console.log('Created root comp');
     this.titleService.setTitle(this.title)
   }
 }

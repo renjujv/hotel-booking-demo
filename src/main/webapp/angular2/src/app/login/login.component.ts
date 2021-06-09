@@ -26,7 +26,9 @@ export class LoginComponent implements OnInit {
 
   constructor(private route:ActivatedRoute, private router:Router,
               private authenticationService:AuthenticationService,
-              private socialAuthenticationService: SocialAuthService) {}
+              private socialAuthenticationService: SocialAuthService) {
+    // console.log('Created login page comp');
+  }
 
   ngOnInit(): void {
     this.loggedIn = this.gLoggedIn = false;
@@ -50,11 +52,13 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  // signIn({value}:{value:LoginDetails}): void {
   signIn({value}:{value:LoginDetails}): void {
     console.log('Trying to log in...');
     this.subscriptions = this.authenticationService.login(value.username,value.password)
-      .subscribe(()=>{
+      .subscribe((response) => {
+        this.authenticationService.setJSessionToken(response);
+        console.log('response: ');
+        console.dir(response);
         this.loggedIn = this.loginSuccess = true;
         this.gLoggedIn = this.invalidLogin = false;
         this.authenticationService.registerSuccessfulLogin(value.username);
@@ -112,10 +116,10 @@ export class LoginComponent implements OnInit {
       ,milliseconds);
   }
 
-  ngOnDestroy(){
-    console.log('Unsubscribing from login component observer.');
-    this.subscriptions.unsubscribe();
-  }
+  // ngOnDestroy(){
+  //   console.log('Unsubscribing from login component observer.');
+  //   this.subscriptions.unsubscribe();
+  // }
 
 }
 

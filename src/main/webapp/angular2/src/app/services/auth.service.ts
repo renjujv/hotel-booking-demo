@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {GoogleLoginProvider, SocialAuthService, SocialUser} from "angularx-social-login";
 import {Observable} from "rxjs";
 
@@ -11,12 +11,13 @@ export class AuthenticationService {
   GOOGLE_SIGNIN_USERNAME = 'G-Username';
   username: string;
   password: string;
+  jSessionToken:string;
 
 
   constructor(private http: HttpClient,
               private socialAuthenticator:SocialAuthService) {}
 
-  login(username:string, password:string):Observable<AuthResponse>{
+  login(username:string, password:string):Observable<HttpResponse<AuthResponse>>{
     this.username=username;
     this.password=password;
     //create auth header
@@ -24,7 +25,12 @@ export class AuthenticationService {
       Authorization: AuthenticationService.createBasicAuthToken(username,password)});
     // Checking authentication with Spring security
     return this.http.get<AuthResponse>(this.AUTH_URL,
-      { headers: headers});
+      { headers: headers,observe: "response"});
+  }
+
+  setJSessionToken(response:HttpResponse<AuthResponse>){
+    this.jSessionToken = response.headers.get('Cookie');
+    console.log('Jsessionid token set'+this.jSessionToken);
   }
 
   private static createBasicAuthToken(username:string, password:string) {

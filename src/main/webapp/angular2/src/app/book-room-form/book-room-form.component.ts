@@ -24,11 +24,13 @@ export class BookRoomFormComponent implements OnInit {
   constructor(private http:HttpClient,
               private route:ActivatedRoute,
               private router:Router,
-              private authenticationService:AuthenticationService) {}
+              private authenticationService:AuthenticationService) {
+    // console.log('Created book room comp');
+  }
 
   ngOnInit() {
-    if(!this.authenticationService.isUserLoggedIn() && !this.authenticationService.isGoogleUserLoggedIn()){
-      console.log('Not authenticated');
+    if((!this.authenticationService.isUserLoggedIn()) && (!this.authenticationService.isGoogleUserLoggedIn())){
+      console.log('Not authenticated. Routing to login page.');
       this.router.navigate(['login']);
     } else console.log('Authenticated User');
     this.roomSearch = new FormGroup({
@@ -68,13 +70,16 @@ export class BookRoomFormComponent implements OnInit {
     let bodyString = JSON.stringify(body);
     let headers = new HttpHeaders({'Content-Type':'application/json'});
     const options = {headers: headers};
+    let posturl = this.baseUrl+'/room/reservation/v1';
 
-    this.subscriptions = this.http.post(this.baseUrl+'/room/reservation/v1',bodyString,options)
+    this.subscriptions = this.http.post(posturl,bodyString,options)
       .subscribe(res => console.log(res));
   }
 
   getAll():Observable<any>{
-    return this.http.get<any>(this.baseUrl+'/room/reservation/v1?checkin='+this.currentCheckinValue+'&checkout='+this.currentCheckoutValue)
+    let getresurl = this.baseUrl+'/room/reservation/v1?checkin='+this.currentCheckinValue+'&checkout='+this.currentCheckoutValue;
+    let getallresurl = this.baseUrl+'/room/reservation/v1/all';
+    return this.http.get<any>(getresurl)
       .pipe(map(this.mapRoom));
   }
 
@@ -104,9 +109,9 @@ export class BookRoomFormComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
-  ngOnDestroy(){
-    this.subscriptions.unsubscribe();
-  }
+  // ngOnDestroy(){
+  //   this.subscriptions.unsubscribe();
+  // }
 }
 
 export interface RoomSearch{

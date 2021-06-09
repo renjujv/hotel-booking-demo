@@ -14,19 +14,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity httpSecurity) throws Exception {
-
         httpSecurity.cors()
                 .and()
-                .authorizeRequests()
-                .antMatchers(HttpMethod.POST).hasRole("ADMIN")
-                .antMatchers(HttpMethod.GET,"/room/reservation/v1/all","/room/reservation/v1").permitAll()
-                .antMatchers(HttpMethod.GET,"/room/reservation/v1/basicauth").hasAnyRole("ADMIN","USER")
-                .antMatchers(HttpMethod.GET,"/room/reservation/v1/{\\d+}").hasAnyRole("ADMIN","USER")
-                .antMatchers(HttpMethod.OPTIONS,"/**").permitAll()
-                .anyRequest().fullyAuthenticated()
+                    .authorizeRequests()
+                    .antMatchers(HttpMethod.POST).hasAnyRole("ADMIN","USER")
+                    .antMatchers(HttpMethod.GET,"/room/reservation/v1/all","/room/reservation/v1").permitAll()
+                    .antMatchers(HttpMethod.GET,"/room/reservation/v1/basicauth").hasAnyRole("ADMIN","USER")
+                    .antMatchers(HttpMethod.GET,"/room/reservation/v1/{\\d+}").hasAnyRole("ADMIN","USER")
+                    .antMatchers(HttpMethod.OPTIONS,"/**").fullyAuthenticated()
+                    .anyRequest().fullyAuthenticated()
                 .and()
-                .httpBasic();
-
+                    .httpBasic();
         httpSecurity.csrf().disable();
         httpSecurity.headers().frameOptions().disable();
     }

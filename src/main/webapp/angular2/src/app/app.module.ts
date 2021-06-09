@@ -4,7 +4,7 @@ import {NgbModule} from "@ng-bootstrap/ng-bootstrap";
 import {ReactiveFormsModule, FormsModule } from "@angular/forms";
 
 import { AppComponent } from './app.component';
-import { HttpClientModule } from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import { BookRoomFormComponent } from './book-room-form/book-room-form.component';
 import { LoginComponent } from './login/login.component';
 import { LogoutComponent } from './logout/logout.component';
@@ -46,7 +46,7 @@ let config = [
     SocialLoginModule
   ],
   providers: [AuthenticationService,
-    HttpInterceptorService,
+    {provide:HTTP_INTERCEPTORS, useClass: HttpInterceptorService, multi:true},
     {
       provide: 'SocialAuthServiceConfig',
       useValue: {
