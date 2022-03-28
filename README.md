@@ -7,3 +7,6 @@ Tech used:
 - Java Spring Boot
 - Hibernate
 - Maven
+
+## App Landing page
+![App Landing page](hotel-booking-app-screenshot-min.png)
