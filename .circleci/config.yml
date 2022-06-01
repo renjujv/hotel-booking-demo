@@ -17,6 +17,12 @@ jobs:
       - run:
           name: "Say hello"
           command: "echo Hello, World!"
+          
+  runner-test:
+    machine: true
+    resource_class: renjujv/cci-runners
+    steps:
+      - run: echo "Hi I'm on Runners!"
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
